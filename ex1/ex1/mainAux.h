@@ -9,6 +9,8 @@
 #define NUM_OF_J 2 
 #define NUM_OF_F 1 
 #define FAILURE_CHAR 'T'
-#include "GamePiece.h"
+#include "GameBoard.h"
+
+bool doPiecePositioning(GameBoard* board, string fileName, int player);
 #endif // !MAINAUX_H_
 

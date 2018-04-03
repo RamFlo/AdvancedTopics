@@ -9,5 +9,4 @@ GameBoard::~GameBoard() {
 		delete[] player2Board;
 	if (finalBoard != NULL)
 		delete[] finalBoard;
-	}
 }
