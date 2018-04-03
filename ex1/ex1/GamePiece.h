@@ -1,7 +1,7 @@
 #ifndef GAMEPIECE_H_
 class GamePiece {
-	char pieceType, curPieceType;
 public:
+	char pieceType, curPieceType;
 	GamePiece(char type, char curType);
 	GamePiece();
 	void curTypeSetter(char newType);

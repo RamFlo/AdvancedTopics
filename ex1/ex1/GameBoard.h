@@ -1,6 +1,8 @@
 #pragma once
 #ifndef GAMEBOARD_H_
 #include <string>
+#include "GamePiece.h"
+#include "mainAux.h"
 using namespace std;
 class GameBoard {
 public:
@@ -19,12 +21,10 @@ public:
 	int winner;
 	int errorLinePlayer1;
 	int errorLinePlayer2;
-	string*  player1Board;
-	string*  player2Board;
-	string*  finalBoard;
+	GamePiece* player1Board[N][M];
+	GamePiece* player2Board[N][M];
+	GamePiece* finalBoard[N][M];
 	string reason;
-	GameBoard();
-	~GameBoard();
 };
 
 

@@ -146,7 +146,7 @@ bool isEnoughFlags(GameBoard* board, int player) {
 
 bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 	string curLine,token;
-	char curPiece;
+	GamePiece* curPiece = NULL;
 	int curLineNum = 1,curCol=0,curRow=0;
 	ifstream fin(fileName);
 	if (fin.fail())
@@ -167,23 +167,24 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 				handlePositioningError(board, player, curLineNum);
 				return true;
 			}
-			curPiece = token[0];
 		}
 		else {
 			cout << "Bad format: position is too short on line " << curLineNum << endl;
 			handlePositioningError(board, player, curLineNum);
 			return true;
 		}
-
+		curPiece = new GamePiece(token[0], token[0]);
 		if (getline(iss, token, ' ')) {
 			if (token.length() != 1) {
 				cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
 				handlePositioningError(board, player, curLineNum);
+				delete curPiece;
 				return true;
 			}
 			if (!isLegalBoardCol(token[0])) {
 				cout << "Bad format: illegal index on line " << curLineNum << endl;
 				handlePositioningError(board, player, curLineNum);
+				delete curPiece;
 				return true;
 			}
 			curCol = token[0] - '0';
@@ -197,11 +198,13 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 			if (token.length() != 1) {
 				cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
 				handlePositioningError(board, player, curLineNum);
+				delete curPiece;
 				return true;
 			}
 			if (!isLegalBoardRow(token[0])) {
 				cout << "Bad format: illegal index on line " << curLineNum << endl;
 				handlePositioningError(board, player, curLineNum);
+				delete curPiece;
 				return true;
 			}
 			curRow = token[0] - '0';
@@ -209,18 +212,21 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 		else {
 			cout << "Bad format: position is too short on line " << curLineNum << endl;
 			handlePositioningError(board, player, curLineNum);
+			delete curPiece;
 			return true;
 		}
-		
 		if (getline(iss, token, ' ')) {
+			if (curPiece)
 			cout << "Bad format: position is too long on line " << curLineNum << endl;
 			handlePositioningError(board, player, curLineNum);
+			delete curPiece;
 			return true;
 		}
 
 		if (!isSquareEmpty(board,player, curRow-1, curCol-1)) {
 			cout << "Bad format: square is not empty for piece on line " << curLineNum << endl;
 			handlePositioningError(board, player, curLineNum);
+			delete curPiece;
 			return true;
 		}
 
@@ -228,6 +234,7 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 		if (!updatePieceCount(board, player, curPiece)) {
 			cout << "Bad format: too many instances of " << curPiece << " on line " << curLineNum << endl;
 			handlePositioningError(board, player, curLineNum);
+			delete curPiece;
 			return true;
 		}
 		getline(fin, curLine);
@@ -236,7 +243,21 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 	if (!isEnoughFlags(board, player)) {
 		cout << "Bad format: missing flags - flags are not positioned according to their number " << endl;
 		handlePositioningError(board, player, curLineNum);
+		delete curPiece;
 		return true;
 	}
 	return true;
+}
+
+void fight(GameBoard* board, int i, int j) {
+	
+}
+
+void mergeBoardsToFinalBoard(GameBoard* board) {
+	int i = 0, j = 0;
+	for (i = 0; i < N; i++) {
+		for (j = 0; j < M; j++) {
+			fight(board,i,j);
+		}
+	}
 }
