@@ -12,5 +12,6 @@
 #include "GameBoard.h"
 
 bool doPiecePositioning(GameBoard* board, string fileName, int player);
+void mergeBoardsToFinalBoard(GameBoard* board);
 #endif // !MAINAUX_H_
 
