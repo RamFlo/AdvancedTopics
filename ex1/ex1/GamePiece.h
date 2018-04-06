@@ -2,7 +2,8 @@
 class GamePiece {
 public:
 	char pieceType, curPieceType;
-	GamePiece(char type, char curType);
+	int player;
+	GamePiece(char type, char curType, int playerNum);
 	GamePiece();
 	void curTypeSetter(char newType);
 };
