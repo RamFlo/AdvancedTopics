@@ -8,6 +8,35 @@ using namespace std;
 //M is x, which represents the cols. N is Y, which represents the rows.
 
 
+void createOutputFile(GameBoard* board) {
+	char curLetter = '\0';
+	ofstream fout;
+	int i = 0, j = 0;
+	fout.open("rps.output");
+	if (fout.fail())
+		cout << "Could not create output file" << endl;
+	else {
+		fout << "Winner: " << board->winner << endl;
+		fout << "Reason: " << board->reason << endl;
+		fout << endl;
+
+		for (i = 0; i < N; i++) {
+			for (j = 0; j < M; j++) {
+				if (board->finalBoard[i][j] != NULL) {
+					if (board->finalBoard[i][j]->player == 1)
+						curLetter = board->finalBoard[i][j]->pieceType;
+					else
+						curLetter = tolower(board->finalBoard[i][j]->pieceType);
+					fout << curLetter;
+				}
+				else
+					fout << " ";
+			}
+			fout << endl;
+		}
+		fout.close();
+	}
+}
 
 /*
 *
@@ -174,17 +203,19 @@ bool isEnoughFlags(GameBoard* board, int player) {
 bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 	string curLine,token;
 	GamePiece* curPiece = NULL;
-	int curLineNum = 1,curCol=0,curRow=0;
+	int curLineNum = 0,curCol=0,curRow=0;
 	ifstream fin(fileName);
 	istringstream iss;
 	if (fin.fail())
 		return false;
-	getline(fin, curLine);
-	while (!fin.eof()) {
+	//getline(fin, curLine);
+	//while (!fin.eof()) {
+	while (getline(fin, curLine)) {
 		if (fin.bad()) {
 			fin.close();
 			return false;
 		}
+		curLineNum++;
 		iss.str(curLine);
 		iss.clear();
 		if (getline(iss, token, ' ')) {
@@ -306,8 +337,8 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 			fin.close();
 			return true;
 		}
-		getline(fin, curLine);
-		curLineNum++;
+		//getline(fin, curLine);
+		//curLineNum++;
 	}
 	if (!isEnoughFlags(board, player)) {
 		cout << "Bad format: missing flags - flags are not positioned according to their number " << endl;
@@ -600,7 +631,7 @@ bool executeMoves(GameBoard* board) {
 			player2moves.close();
 			return true;
 		}
-		if (!player1FileEnded)
+		/*if (!player1FileEnded)
 			getline(player1moves, curPlayer1Line);
 		if (!player2FileEnded)
 			getline(player2moves, curPlayer2Line);
@@ -611,7 +642,20 @@ bool executeMoves(GameBoard* board) {
 		if (player2moves.eof() || curPlayer2Line == "")
 			player2FileEnded = true;
 		else
-			curLinePlayer2Num++;
+			curLinePlayer2Num++;*/
+
+		if (!player1FileEnded) {
+			if(!getline(player1moves, curPlayer1Line) || curPlayer1Line == "")
+				player1FileEnded = true;
+			else
+				curLinePlayer1Num++;
+		}
+		if (!player2FileEnded) {
+			if (!getline(player2moves, curPlayer2Line) || curPlayer2Line == "")
+				player2FileEnded = true;
+			else
+				curLinePlayer2Num++;
+		}
 		if (player1FileEnded && player2FileEnded) {
 			board->winner = 0;
 			board->reason = "A tie - both Moves input files done without a winner";

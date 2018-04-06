@@ -8,13 +8,17 @@ using namespace std;
 
 
 int main() {
-	int i = 0, j = 0;
-	char curLetter = '\0';
+	//int i = 0, j = 0;
+	//char curLetter = '\0';
 	GameBoard board;
-	ofstream fout;
+	//ofstream fout;
 	board.reason = "";
 	if (!doPiecePositioning(&board, "player1.rps_board", 1) || !doPiecePositioning(&board, "player2.rps_board", 2)) {
 		cout << "Could not open a positioning file" << endl;
+		return 0;
+	}
+	if (board.reason != "") {
+		createOutputFile(&board);
 		return 0;
 	}
 	mergeBoardsToFinalBoard(&board);
@@ -26,7 +30,7 @@ int main() {
 		cout << "Could not open a moves file" << endl;
 		return 0;
 	}
-	fout.open("rps.output");
+	/*fout.open("rps.output");
 	if (fout.fail()) {
 		cout << "Could not create output file" << endl;
 		return 0;
@@ -49,8 +53,7 @@ int main() {
 		}
 		fout << endl;
 	}
-	fout.close();
+	fout.close();*/
+	createOutputFile(&board);
 	return 0;
-
-
 }

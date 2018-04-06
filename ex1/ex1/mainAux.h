@@ -13,5 +13,6 @@
 bool doPiecePositioning(GameBoard* board, string fileName, int player);
 void mergeBoardsToFinalBoard(GameBoard* board);
 bool executeMoves(GameBoard* board);
+void createOutputFile(GameBoard* board);
 #endif // !MAINAUX_H_
 
