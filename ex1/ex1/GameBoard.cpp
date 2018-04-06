@@ -38,8 +38,7 @@ GameBoard::~GameBoard() {
 				delete this->player1Board[i][j];
 			if (this->player2Board[i][j] != NULL)
 				delete this->player2Board[i][j];
-			if (this->finalBoard[i][j] != NULL)
-				delete this->finalBoard[i][j];
+			this->finalBoard[i][j] = NULL;
 		}
 	}
 

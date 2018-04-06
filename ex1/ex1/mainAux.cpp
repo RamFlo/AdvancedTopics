@@ -320,10 +320,6 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 	return true;
 }
 
-void decrementCountOfPiece(GameBoard* board, GamePiece* piece, int player) {
-
-}
-
 GamePiece* fight(GameBoard* board, GamePiece* p1, GamePiece* p2) { //given two pieces determines which piece wins
 	if (p1 == NULL)
 		return p2;
@@ -370,7 +366,7 @@ GamePiece* fight(GameBoard* board, GamePiece* p1, GamePiece* p2) { //given two p
 		updatePieceCount(board, p2->player, p2->pieceType, -1);
 		return p1;
 	}
-		
+	return NULL;
 }
 
 void mergeBoardsToFinalBoard(GameBoard* board) {
@@ -419,7 +415,6 @@ int getNumOfMovingPlayerPieces(GameBoard* board, int curPlayer) {
 }
 
 bool hasOtherPlayerWon(GameBoard* board, int curPlayer) {
-	int movingPieces;
 	if (getNumOfMovingPlayerPieces(board, curPlayer) == 0) {
 		board->winner = getOtherPlayer(curPlayer);
 		board->reason = "All moving PIECEs of the opponent are eaten";
@@ -467,7 +462,7 @@ bool executePlayerMove(GameBoard* board, int player, string move, int curLineNum
 	char jokerNewType = '\0';
 	string token;
 	istringstream iss(move);
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 4; i++) {
 		if (getline(iss, token, ' ')) {
 			if (token.length() != 1) {
 				cout << "Bad format: move input size by player " << player << " inconsistent with given instructions on line " << curLineNum << endl;
@@ -590,7 +585,7 @@ bool executePlayerMove(GameBoard* board, int player, string move, int curLineNum
 bool executeMoves(GameBoard* board) {
 	bool player1FileEnded = false, player2FileEnded = false;
 	string curPlayer1Line, curPlayer2Line;
-	int curPlayer = 1, srcRow = 0, srcCol = 0, destRow = 0, destCol = 0,curLinePlayer1Num=0, curLinePlayer2Num = 0;
+	int curLinePlayer1Num=0, curLinePlayer2Num = 0;
 	ifstream player1moves("player1.rps_moves");
 	if (player1moves.fail())
 		return false;
@@ -609,11 +604,11 @@ bool executeMoves(GameBoard* board) {
 			getline(player1moves, curPlayer1Line);
 		if (!player2FileEnded)
 			getline(player2moves, curPlayer2Line);
-		if (player1moves.eof())
+		if (player1moves.eof() || curPlayer1Line == "")
 			player1FileEnded = true;
 		else
 			curLinePlayer1Num++;
-		if (player2moves.eof())
+		if (player2moves.eof() || curPlayer2Line == "")
 			player2FileEnded = true;
 		else
 			curLinePlayer2Num++;

@@ -8,7 +8,7 @@ using namespace std;
 
 
 int main() {
-	int i = 0,j=0, curPlayer = 1;
+	int i = 0, j = 0;
 	char curLetter = '\0';
 	GameBoard board;
 	ofstream fout;
@@ -47,6 +47,7 @@ int main() {
 			else
 				fout << " ";
 		}
+		fout << endl;
 	}
 	fout.close();
 	return 0;
