@@ -2,7 +2,8 @@
 #ifndef GAMEBOARD_H_
 #include <string>
 #include "GamePiece.h"
-#include "mainAux.h"
+#define N 10
+#define M 10
 using namespace std;
 class GameBoard {
 public:
@@ -25,6 +26,8 @@ public:
 	GamePiece* player2Board[N][M];
 	GamePiece* finalBoard[N][M];
 	string reason;
+	GameBoard();
+	~GameBoard();
 };
 
 
