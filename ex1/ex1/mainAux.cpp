@@ -50,12 +50,21 @@ POSITIONING
 *
 */
 
-bool isLegalBoardCol(char colIndex) {
-	return isdigit(colIndex) && (colIndex - '0') > 0 && (colIndex - '0') < M;
+bool isLegalNonNegativeNumber(string numString) {
+	int i = 0;
+	for (i = 0; i < numString.length(); i++) {
+		if (!isdigit(numString[i]))
+			return false;
+	}
+	return true;
 }
 
-bool isLegalBoardRow(char rowIndex) {
-	return isdigit(rowIndex) && (rowIndex - '0') > 0 && (rowIndex - '0') < N;
+bool isLegalBoardCol(string colIndex) {
+	return isLegalNonNegativeNumber(colIndex) && stoi(colIndex) > 0 && stoi(colIndex) <= M;
+}
+
+bool isLegalBoardRow(string rowIndex) {
+	return isLegalNonNegativeNumber(rowIndex) && stoi(rowIndex) > 0 && stoi(rowIndex) <= N;
 }
 
 bool isLegalPieceChar(char c) {
@@ -240,21 +249,14 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 		}
 		curPiece = new GamePiece(token[0], token[0],player);
 		if (getline(iss, token, ' ')) {
-			if (token.length() != 1) {
-				cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
-				handlePositioningError(board, player, curLineNum);
-				delete curPiece;
-				fin.close();
-				return true;
-			}
-			if (!isLegalBoardCol(token[0])) {
+			if (!isLegalBoardCol(token)) {
 				cout << "Bad format: illegal index on line " << curLineNum << endl;
 				handlePositioningError(board, player, curLineNum);
 				delete curPiece;
 				fin.close();
 				return true;
 			}
-			curCol = token[0] - '0';
+			curCol = stoi(token);
 		}
 		else {
 			cout << "Bad format: position is too short on line " << curLineNum << endl;
@@ -263,21 +265,14 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 			return true;
 		}
 		if (getline(iss, token, ' ')) {
-			if (token.length() != 1) {
-				cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
-				handlePositioningError(board, player, curLineNum);
-				delete curPiece;
-				fin.close();
-				return true;
-			}
-			if (!isLegalBoardRow(token[0])) {
+			if (!isLegalBoardRow(token)) {
 				cout << "Bad format: illegal index on line " << curLineNum << endl;
 				handlePositioningError(board, player, curLineNum);
 				delete curPiece;
 				fin.close();
 				return true;
 			}
-			curRow = token[0] - '0';
+			curRow = stoi(token);
 		}
 		else {
 			cout << "Bad format: position is too short on line " << curLineNum << endl;
@@ -333,7 +328,7 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 		if (!updatePieceCount(board, player, curPiece->pieceType, 1)) {
 			cout << "Bad format: too many instances of " << curPiece->pieceType << " on line " << curLineNum << endl;
 			handlePositioningError(board, player, curLineNum);
-			delete curPiece;
+			//delete curPiece;
 			fin.close();
 			return true;
 		}
@@ -343,7 +338,7 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 	if (!isEnoughFlags(board, player)) {
 		cout << "Bad format: missing flags - flags are not positioned according to their number " << endl;
 		handlePositioningError(board, player, curLineNum);
-		delete curPiece;
+		//delete curPiece;
 		fin.close();
 		return true;
 	}
@@ -495,26 +490,20 @@ bool executePlayerMove(GameBoard* board, int player, string move, int curLineNum
 	istringstream iss(move);
 	for (i = 0; i < 4; i++) {
 		if (getline(iss, token, ' ')) {
-			if (token.length() != 1) {
-				cout << "Bad format: move input size by player " << player << " inconsistent with given instructions on line " << curLineNum << endl;
-				handleMovingFileError(board, player, curLineNum);
-				iss.clear();
-				return false;
-			}
-			if (((i == 1 || i == 3) && !isLegalBoardRow(token[0])) || ((i == 0 || i == 2) && !isLegalBoardCol(token[0]))) {
+			if (((i == 1 || i == 3) && !isLegalBoardRow(token)) || ((i == 0 || i == 2) && !isLegalBoardCol(token))) {
 				cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
 				handleMovingFileError(board, player, curLineNum);
 				iss.clear();
 				return false;
 			}
 			if (i == 0)
-				srcCol = token[0] - '0';
+				srcCol = stoi(token);
 			if (i == 1)
-				srcRow = token[0] - '0';
+				srcRow = stoi(token);
 			if (i == 2)
-				destCol = token[0] - '0';
+				destCol = stoi(token);
 			if (i == 3)
-				destRow = token[0] - '0';
+				destRow = stoi(token);
 		}
 		else {
 			cout << "Bad format: move command is too short by player " << player << " on line " << curLineNum << endl;
@@ -527,22 +516,16 @@ bool executePlayerMove(GameBoard* board, int player, string move, int curLineNum
 		if (token == "J:") {
 			for (i = 0; i < 2; i++) {
 				if (getline(iss, token, ' ')) {
-					if (token.length() != 1) {
-						cout << "Bad format: move input size by player " << player << " inconsistent with given instructions on line " << curLineNum << endl;
-						handleMovingFileError(board, player, curLineNum);
-						iss.clear();
-						return false;
-					}
-					if ((i == 1 && !isLegalBoardRow(token[0])) || (i == 0 && !isLegalBoardCol(token[0]))) {
+					if ((i == 1 && !isLegalBoardRow(token)) || (i == 0 && !isLegalBoardCol(token))) {
 						cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
 						handleMovingFileError(board, player, curLineNum);
 						iss.clear();
 						return false;
 					}
 					if (i == 0)
-						jCol = token[0] - '0';
+						jCol = stoi(token);
 					if (i == 1)
-						jRow = token[0] - '0';
+						jRow = stoi(token);
 				}
 				else {
 					cout << "Bad format: move command is too short by player " << player << " on line " << curLineNum << endl;
