@@ -7,7 +7,7 @@
 using namespace std;
 //M is x, which represents the cols. N is Y, which represents the rows.
 
-
+//This function creates the output file, and adds the winner, reason and gameboard to it
 void createOutputFile(GameBoard* board) {
 	char curLetter = '\0';
 	ofstream fout;
@@ -50,6 +50,7 @@ POSITIONING
 *
 */
 
+//This function checks if a string represents a non-negative integer
 bool isLegalNonNegativeNumber(string numString) {
 	int i = 0;
 	for (i = 0; i < numString.length(); i++) {
@@ -59,14 +60,16 @@ bool isLegalNonNegativeNumber(string numString) {
 	return true;
 }
 
+//checks if a string represents a legal column index
 bool isLegalBoardCol(string colIndex) {
 	return isLegalNonNegativeNumber(colIndex) && stoi(colIndex) > 0 && stoi(colIndex) <= M;
 }
-
+//checks if a string represents a legal row index
 bool isLegalBoardRow(string rowIndex) {
 	return isLegalNonNegativeNumber(rowIndex) && stoi(rowIndex) > 0 && stoi(rowIndex) <= N;
 }
 
+//checks if a string represents a legal piece char
 bool isLegalPieceChar(char c) {
 	switch (c)
 	{
@@ -82,6 +85,7 @@ bool isLegalPieceChar(char c) {
 	return false;
 }
 
+//checks if a string represents a legal joker curType char (board pieces the joker can become)
 bool isLegalJokerTypeChar(char c) {
 	switch (c)
 	{
@@ -95,6 +99,8 @@ bool isLegalJokerTypeChar(char c) {
 	return false;
 }
 
+//After a piece is added to the board, increments or decrements (as needed) the number of instances of this piece, 
+// for the player that added the piece
 bool updatePieceCount(GameBoard* board,int player,char piece, int incOrDec) {
 	if (player == 1) {
 		switch (piece)
@@ -157,13 +163,14 @@ bool updatePieceCount(GameBoard* board,int player,char piece, int incOrDec) {
 	return false;
 }
 
-
+// Given a player, returns the other player
 int getOtherPlayer(int player) {
 	if (player == 1)
 		return 2;
 	return 1;
 }
 
+// When a positioning error is found, this function updates the Board's winner and reason variables
 void updateWinnerAndReasonOnBadPositioning(GameBoard* board, int errorLineNum, int player) {
 	
 	if (board->winner == 0) {
@@ -176,7 +183,7 @@ void updateWinnerAndReasonOnBadPositioning(GameBoard* board, int errorLineNum, i
 	}
 }
 
-
+// When some player has an error, this function updates that player's error line (where the error occured)
 void updateErrorLine(GameBoard* board, int player, int errorLine) {
 	if (player == 1)
 		board->errorLinePlayer1 = errorLine;
@@ -185,17 +192,20 @@ void updateErrorLine(GameBoard* board, int player, int errorLine) {
 		
 }
 
+// When we find a positioning error, this function updates the line where it occured, then updates the reason and winner
 void handlePositioningError(GameBoard* board, int player, int errorLine) {
 	updateErrorLine(board, player, errorLine);
 	updateWinnerAndReasonOnBadPositioning(board, errorLine, player);
 }
 
+//checks if a certain square of a certain player's board is empty
 bool isSquareEmpty(GameBoard* board, int player, int row, int col) {
 	if (player == 1)
 		return board->player1Board[row][col] == NULL;
 	return board->player2Board[row][col] == NULL;
 }
 
+//puts a piece on a given player's board
 void putPieceOnPlayerBoard(GameBoard* board, int player, int row, int col,GamePiece* piece) {
 	if (player == 1)
 		board->player1Board[row][col] = piece;
@@ -203,23 +213,23 @@ void putPieceOnPlayerBoard(GameBoard* board, int player, int row, int col,GamePi
 		board->player2Board[row][col] = piece;
 }
 
+// checks if a given player has enough flags (as many as needed)
 bool isEnoughFlags(GameBoard* board, int player) {
 	if (player == 1)
 		return board->player1Flags == NUM_OF_F;
 	return board->player2Flags == NUM_OF_F;
 }
 
+//Given a player's positioning file, positions all of it's pieces on his board
 bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 	string curLine,token;
 	GamePiece* curPiece = NULL;
 	int curLineNum = 0,curCol=0,curRow=0;
 	ifstream fin(fileName);
 	istringstream iss;
-	if (fin.fail())
+	if (fin.fail()) //checking if we could open the file
 		return false;
-	//getline(fin, curLine);
-	//while (!fin.eof()) {
-	while (getline(fin, curLine)) {
+	while (getline(fin, curLine)) { //returns false when reaching EOF
 		if (fin.bad()) {
 			fin.close();
 			return false;
@@ -227,7 +237,7 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 		curLineNum++;
 		iss.str(curLine);
 		iss.clear();
-		if (getline(iss, token, ' ')) {
+		if (getline(iss, token, ' ')) { 
 			if (token.length() != 1) { //if piece char is not sized correctly
 				cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
 				handlePositioningError(board, player, curLineNum);
@@ -292,7 +302,7 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 			}
 		}
 		else { //curPiece is joker
-			if (getline(iss, token, ' ')) {
+			if (getline(iss, token, ' ')) { //trying to get a char representing the piece's type
 				if (token.length() != 1) { //if piece char is not sized correctly
 					cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
 					handlePositioningError(board, player, curLineNum);
@@ -308,7 +318,7 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 					return true;
 				}
 			}
-			else {
+			else { //getline was false - couldn't find a char to use
 				cout << "Bad format: position is too short on line " << curLineNum << endl;
 				handlePositioningError(board, player, curLineNum);
 				delete curPiece;
@@ -317,28 +327,24 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 			}
 			curPiece->curPieceType = token[0];
 		}
-		if (!isSquareEmpty(board,player, curRow-1, curCol-1)) {
+		if (!isSquareEmpty(board,player, curRow-1, curCol-1)) { //checking if the player already put a piece on this square
 			cout << "Bad format: square is not empty for piece on line " << curLineNum << endl;
 			handlePositioningError(board, player, curLineNum);
 			delete curPiece;
 			fin.close();
 			return true;
 		}
-		putPieceOnPlayerBoard(board, player, curRow-1, curCol-1, curPiece);
-		if (!updatePieceCount(board, player, curPiece->pieceType, 1)) {
+		putPieceOnPlayerBoard(board, player, curRow-1, curCol-1, curPiece); //putting the piece on the player's board
+		if (!updatePieceCount(board, player, curPiece->pieceType, 1)) { //checking there aren't too many instances of the current piece
 			cout << "Bad format: too many instances of " << curPiece->pieceType << " on line " << curLineNum << endl;
 			handlePositioningError(board, player, curLineNum);
-			//delete curPiece;
 			fin.close();
 			return true;
 		}
-		//getline(fin, curLine);
-		//curLineNum++;
 	}
-	if (!isEnoughFlags(board, player)) {
+	if (!isEnoughFlags(board, player)) { //checking the player has enough flags (finished the while loop, positioning finished
 		cout << "Bad format: missing flags - flags are not positioned according to their number " << endl;
 		handlePositioningError(board, player, curLineNum);
-		//delete curPiece;
 		fin.close();
 		return true;
 	}
@@ -346,6 +352,7 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 	return true;
 }
 
+// Simulates a fight between 2 pieces - returns a pointer to the winner
 GamePiece* fight(GameBoard* board, GamePiece* p1, GamePiece* p2) { //given two pieces determines which piece wins
 	if (p1 == NULL)
 		return p2;
@@ -395,6 +402,8 @@ GamePiece* fight(GameBoard* board, GamePiece* p1, GamePiece* p2) { //given two p
 	return NULL;
 }
 
+//Merging both player's boards into one final board, including holding all needed fights between two pieces
+//The final board holds a pointer to the winning piece of each fight
 void mergeBoardsToFinalBoard(GameBoard* board) {
 	int i = 0, j = 0;
 	for (i = 0; i < N; i++) {
@@ -417,16 +426,19 @@ GAME
 *
 */
 
+//When a player does a bad move, updates the winner (other player) and reason
 void updateWinnerAndReasonOnBadMoveFile(GameBoard* board, int errorLineNum, int player) {
 	board->winner = getOtherPlayer(player);
 	board->reason = "Bad Moves input file for player " + to_string(player) + " - line " + to_string(errorLineNum);
 }
 
+// When we find a moving error, this function updates the line where it occured, then updates the reason and winner
 void handleMovingFileError(GameBoard* board, int player, int errorLine) {
 	updateErrorLine(board, player, errorLine);
 	updateWinnerAndReasonOnBadMoveFile(board, errorLine, player);
 }
 
+//Counts the number of given player's pieces that are alive and able to move (such as rock, paper etc)
 int getNumOfMovingPlayerPieces(GameBoard* board, int curPlayer) {
 	int movingPieces = 0, i = 0, j = 0;
 	for (i = 0; i < N; i++) {
@@ -440,6 +452,8 @@ int getNumOfMovingPlayerPieces(GameBoard* board, int curPlayer) {
 	return movingPieces;
 }
 
+// given a player, checks if the other player has won:
+//1 - checks if the given player has moves to make. 2 - checks if the player has flags left
 bool hasOtherPlayerWon(GameBoard* board, int curPlayer) {
 	if (getNumOfMovingPlayerPieces(board, curPlayer) == 0) {
 		board->winner = getOtherPlayer(curPlayer);
@@ -463,6 +477,7 @@ bool hasOtherPlayerWon(GameBoard* board, int curPlayer) {
 	return false;
 }
 
+//checks if a given player can move the piece in the given square (it's his piece, and the piece is of a type that can move)
 //col, row 1-indexed
 bool isLegalPieceInSourceSquare(GameBoard* board, int curPlayer, int col, int row) {
 	if (board->finalBoard[row - 1][col - 1] == NULL || board->finalBoard[row - 1][col - 1]->player != curPlayer)
@@ -472,6 +487,8 @@ bool isLegalPieceInSourceSquare(GameBoard* board, int curPlayer, int col, int ro
 	return true;
 }
 
+//given a player, src square and dest square, checks if the move is legal assuming the src square is legal (contains a moveable piece)
+//namely, checks if the dest square is only 1 square away (not diagonal), and is empty or contains opponent piece
 //col, row 1-indexed
 bool isLegalMoveFromSourceSquare(GameBoard* board, int curPlayer, int srcCol, int srcRow, int destCol, int destRow) {
 	if ((abs(srcCol - destCol) + abs(srcRow - destRow)) != 1)
@@ -481,21 +498,21 @@ bool isLegalMoveFromSourceSquare(GameBoard* board, int curPlayer, int srcCol, in
 	return false;
 }
 
-//true: move executed
-//false: bad format
+// executes a given move for a given player.
+//return value - false: bad format. true: move executed
 bool executePlayerMove(GameBoard* board, int player, string move, int curLineNum) {
 	int srcCol = 0, srcRow = 0, destCol = 0, destRow = 0,i=0,jCol=0,jRow=0;
 	char jokerNewType = '\0';
 	string token;
 	istringstream iss(move);
 	for (i = 0; i < 4; i++) {
-		if (getline(iss, token, ' ')) {
-			if (((i == 1 || i == 3) && !isLegalBoardRow(token)) || ((i == 0 || i == 2) && !isLegalBoardCol(token))) {
+		if (getline(iss, token, ' ')) { //tries to take the next input index
+			if (((i == 1 || i == 3) && !isLegalBoardRow(token)) || ((i == 0 || i == 2) && !isLegalBoardCol(token))) { //checks if legal
 				cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
 				handleMovingFileError(board, player, curLineNum);
 				iss.clear();
 				return false;
-			}
+			}//updates relevant src/dest row/col
 			if (i == 0)
 				srcCol = stoi(token);
 			if (i == 1)
@@ -505,43 +522,43 @@ bool executePlayerMove(GameBoard* board, int player, string move, int curLineNum
 			if (i == 3)
 				destRow = stoi(token);
 		}
-		else {
+		else { //getline failed on a certain iteration - could not get index
 			cout << "Bad format: move command is too short by player " << player << " on line " << curLineNum << endl;
 			handleMovingFileError(board, player, curLineNum);
 			iss.clear();
 			return false;
 		}
-	}
-	if (getline(iss, token, ' ')) {
-		if (token == "J:") {
+	} //at this point, we have all src/dest row/col indexes
+	if (getline(iss, token, ' ')) { //checks if there is a joker change of type given
+		if (token == "J:") { 
 			for (i = 0; i < 2; i++) {
-				if (getline(iss, token, ' ')) {
+				if (getline(iss, token, ' ')) { //tries to get the index of the joker (2 indexes, done 2 times)
 					if ((i == 1 && !isLegalBoardRow(token)) || (i == 0 && !isLegalBoardCol(token))) {
 						cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
 						handleMovingFileError(board, player, curLineNum);
 						iss.clear();
 						return false;
-					}
+					}//updates relevant joker row/col
 					if (i == 0)
 						jCol = stoi(token);
 					if (i == 1)
 						jRow = stoi(token);
 				}
-				else {
+				else { //getline failed - at least one index missing
 					cout << "Bad format: move command is too short by player " << player << " on line " << curLineNum << endl;
 					handleMovingFileError(board, player, curLineNum);
 					iss.clear();
 					return false;
 				}
 			}
-			if (getline(iss, token, ' ')) {
+			if (getline(iss, token, ' ')) { //gets the new curType of the given joker
 				if (token.length() != 1) {
 					cout << "Bad format: move input size by player " << player << " inconsistent with given instructions on line " << curLineNum << endl;
 					handleMovingFileError(board, player, curLineNum);
 					iss.clear();
 					return false;
 				}
-				if (!isLegalJokerTypeChar(token[0])) {
+				if (!isLegalJokerTypeChar(token[0])) { //checks given curType is legal
 					cout << "Bad format: illegal move command joker type by player " << player << " on line " << curLineNum << endl;
 					handleMovingFileError(board, player, curLineNum);
 					iss.clear();
@@ -549,14 +566,14 @@ bool executePlayerMove(GameBoard* board, int player, string move, int curLineNum
 				}
 				jokerNewType = token[0];
 			}
-			else {
+			else { //getline failed - joker's new type is missing
 				cout << "Bad format: move command is too short by player " << player << " on line " << curLineNum << endl;
 				handleMovingFileError(board, player, curLineNum);
 				iss.clear();
 				return false;
 			}
 		}
-		else {
+		else { //an extra char/string was given, and it isn't J: - meaning it's an error
 			cout << "Bad format: bad character at move command player " << player << " on line " << curLineNum << endl;
 			handleMovingFileError(board, player, curLineNum);
 			iss.clear();
@@ -564,25 +581,25 @@ bool executePlayerMove(GameBoard* board, int player, string move, int curLineNum
 		}
 	}
 	
-	if (!isLegalPieceInSourceSquare(board, player, srcCol, srcRow)) {
+	if (!isLegalPieceInSourceSquare(board, player, srcCol, srcRow)) { //checks that the src square holds a legal piece for the player
 		cout << "Bad format: illegal move command's source square chosen by player " << player << " on line " << curLineNum << endl;
 		handleMovingFileError(board, player, curLineNum);
 		iss.clear();
 		return false;
 	}
-	if (!isLegalMoveFromSourceSquare(board, player, srcCol, srcRow, destCol, destRow)) {
+	if (!isLegalMoveFromSourceSquare(board, player, srcCol, srcRow, destCol, destRow)) { //checks if dest square is legal
 		cout << "Bad format: illegal move command's destination square chosen by player " << player << " on line " << curLineNum << endl;
 		handleMovingFileError(board, player, curLineNum);
 		iss.clear();
 		return false;
-	}
+	} //updates the board - does fight between the pieces if necessary
 	board->finalBoard[destRow - 1][destCol - 1] = fight(board,board->finalBoard[srcRow - 1][srcCol - 1], board->finalBoard[destRow - 1][destCol - 1]);
 	board->finalBoard[srcRow - 1][srcCol - 1] = NULL;
 
-	if (jokerNewType != '\0') {
+	if (jokerNewType != '\0') { //There was a joker change of type in the command
 		if ((board->finalBoard[jRow - 1][jCol - 1] != NULL) && (board->finalBoard[jRow - 1][jCol - 1]->pieceType == 'J')&&(board->finalBoard[jRow - 1][jCol - 1]->player = player))
 			board->finalBoard[jRow - 1][jCol - 1]->curPieceType = jokerNewType;
-		else {
+		else { //there isn't a joker in the specified joker square
 			cout << "Bad format: illegal joker updating command specified by player " << player << " on line " << curLineNum << endl;
 			handleMovingFileError(board, player, curLineNum);
 			iss.clear();
@@ -594,8 +611,8 @@ bool executePlayerMove(GameBoard* board, int player, string move, int curLineNum
 }
 
 
-//true: game ended
-//false: bad input moves file/files
+//Executes the moves of both players - the actual game.
+//return value - false: bad input moves file/files. true: game ended
 bool executeMoves(GameBoard* board) {
 	bool player1FileEnded = false, player2FileEnded = false;
 	string curPlayer1Line, curPlayer2Line;
@@ -609,44 +626,31 @@ bool executeMoves(GameBoard* board) {
 		return false;
 	}
 	while (true) {
-		if (hasOtherPlayerWon(board, 1)) {
+		if (hasOtherPlayerWon(board, 1)) { //checks if the first player lost (on second player's move or before)
 			player1moves.close();
 			player2moves.close();
 			return true;
 		}
-		/*if (!player1FileEnded)
-			getline(player1moves, curPlayer1Line);
-		if (!player2FileEnded)
-			getline(player2moves, curPlayer2Line);
-		if (player1moves.eof() || curPlayer1Line == "")
-			player1FileEnded = true;
-		else
-			curLinePlayer1Num++;
-		if (player2moves.eof() || curPlayer2Line == "")
-			player2FileEnded = true;
-		else
-			curLinePlayer2Num++;*/
-
-		if (!player1FileEnded) {
+		if (!player1FileEnded) { //if there are more player1's commands to do - get the next command
 			if(!getline(player1moves, curPlayer1Line) || curPlayer1Line == "")
 				player1FileEnded = true;
 			else
 				curLinePlayer1Num++;
 		}
-		if (!player2FileEnded) {
+		if (!player2FileEnded) { //if there are more player2's commands to do - get the next command
 			if (!getline(player2moves, curPlayer2Line) || curPlayer2Line == "")
 				player2FileEnded = true;
 			else
 				curLinePlayer2Num++;
 		}
-		if (player1FileEnded && player2FileEnded) {
+		if (player1FileEnded && player2FileEnded) { //both players ran out of plays - tie
 			board->winner = 0;
 			board->reason = "A tie - both Moves input files done without a winner";
 			player1moves.close();
 			player2moves.close();
 			return true;
 		}
-		if (!player1FileEnded) {
+		if (!player1FileEnded) {//if there are more player1's commands to do - execute the next command
 			if (!executePlayerMove(board, 1, curPlayer1Line, curLinePlayer1Num)) {
 				player1moves.close();
 				player2moves.close();
@@ -658,7 +662,7 @@ bool executeMoves(GameBoard* board) {
 			player2moves.close();
 			return true;
 		}
-		if (!player2FileEnded) {
+		if (!player2FileEnded) {//if there are more player2's commands to do - execute the next command
 			if (!executePlayerMove(board, 2, curPlayer2Line, curLinePlayer2Num)) {
 				player1moves.close();
 				player2moves.close();
