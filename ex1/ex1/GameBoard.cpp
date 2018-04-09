@@ -31,7 +31,7 @@ GameBoard::GameBoard() {
 }
 GameBoard::~GameBoard() {
 	int i = 0, j = 0;
-
+	printf("1");
 	for (i = 0; i < N; i++) {
 		for (j = 0; j < M; j++) {
 			if (this->player1Board[i][j] != NULL)
@@ -41,18 +41,5 @@ GameBoard::~GameBoard() {
 			this->finalBoard[i][j] = NULL;
 		}
 	}
-
-	/*
-	if (player1Board != NULL) {
-	for (i=0; i<N; i++)
-	delete[] player1Board[]
-
-	}
-	delete[] player1Board;
-	if (player2Board != NULL)
-	delete[] player2Board;
-	if (finalBoard != NULL)
-	delete[] finalBoard;
-	*/
-
+	printf("2");
 }
