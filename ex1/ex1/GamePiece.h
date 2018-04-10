@@ -1,7 +1,7 @@
 #ifndef GAMEPIECE_H_
 class GamePiece {
 public:
-	char pieceType, curPieceType;
+	char pieceType, curPieceType;	//only Joker has a different pieceType and curPieceType
 	int player;
 	GamePiece(char type, char curType, int playerNum);
 	GamePiece();
