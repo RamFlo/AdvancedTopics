@@ -11,19 +11,20 @@ GameBoard::GameBoard() {
 			this->finalBoard[i][j] = NULL;
 		}
 	}
-	this->player1Flags = 0;
-	this->player1Flags=0;
-	this->player1Jokers = 0;
-	this->player1Rocks = 0;
-	this->player1Scissors = 0;
-	this->player1Papers = 0;
-	this->player1Bombs = 0;
-	this->player2Flags = 0;
-	this->player2Jokers = 0;
-	this->player2Rocks = 0;
-	this->player2Scissors = 0;
-	this->player2Papers = 0;
-	this->player2Bombs = 0;
+
+
+	this->pieceCountMap["player1Flags"] = 0;
+	this->pieceCountMap["player1Jokers"] = 0;
+	this->pieceCountMap["player1Rocks"] = 0;
+	this->pieceCountMap["player1Scissors"] = 0;
+	this->pieceCountMap["player1Papers"] = 0;
+	this->pieceCountMap["player1Bombs"] = 0;
+	this->pieceCountMap["player2Flags"] = 0;
+	this->pieceCountMap["player2Jokers"] = 0;
+	this->pieceCountMap["player2Rocks"] = 0;
+	this->pieceCountMap["player2Scissors"] = 0;
+	this->pieceCountMap["player2Papers"] = 0;
+	this->pieceCountMap["player2Bombs"] = 0;
 	this->winner = 0;
 	this->errorLinePlayer1 = 0;
 	this->errorLinePlayer2 = 0;

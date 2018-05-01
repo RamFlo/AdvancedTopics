@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <vector>
 using namespace std;
 //M is x, which represents the cols. N is Y, which represents the rows.
 
@@ -36,6 +37,13 @@ void createOutputFile(GameBoard* board) {
 		}
 		fout.close();
 	}
+}
+
+void parseStringIntoVector(vector<string>* myVec, string str) {
+	string buf; // Have a buffer string
+	stringstream ss(str); // Insert the string into a stream
+	while (ss >> buf)
+		myVec->push_back(buf);
 }
 
 /*
@@ -106,28 +114,28 @@ bool updatePieceCount(GameBoard* board,int player,char piece, int incOrDec) {
 		switch (piece)
 		{
 		case 'J':
-			board->player1Jokers+= incOrDec;
-			return (board->player1Jokers <= NUM_OF_J);
+			board->pieceCountMap["player1Jokers"]+= incOrDec;
+			return (board->pieceCountMap["player1Jokers"] <= NUM_OF_J);
 			break;
 		case 'R':
-			board->player1Rocks += incOrDec;
-			return (board->player1Rocks <= NUM_OF_R);
+			board->pieceCountMap["player1Rocks"] += incOrDec;
+			return (board->pieceCountMap["player1Rocks"] <= NUM_OF_R);
 			break;
 		case 'P':
-			board->player1Papers += incOrDec;
-			return (board->player1Papers <= NUM_OF_P);
+			board->pieceCountMap["player1Papers"] += incOrDec;
+			return (board->pieceCountMap["player1Papers"] <= NUM_OF_P);
 			break;
 		case 'S':
-			board->player1Scissors += incOrDec;
-			return (board->player1Scissors <= NUM_OF_S);
+			board->pieceCountMap["player1Scissors"] += incOrDec;
+			return (board->pieceCountMap["player1Scissors"] <= NUM_OF_S);
 			break;
 		case 'B':
-			board->player1Bombs += incOrDec;
-			return (board->player1Bombs <= NUM_OF_B);
+			board->pieceCountMap["player1Bombs"] += incOrDec;
+			return (board->pieceCountMap["player1Bombs"] <= NUM_OF_B);
 			break;
 		case 'F':
-			board->player1Flags += incOrDec;
-			return (board->player1Flags <= NUM_OF_F);
+			board->pieceCountMap["player1Flags"] += incOrDec;
+			return (board->pieceCountMap["player1Flags"] <= NUM_OF_F);
 			break;
 		}
 	}
@@ -135,28 +143,28 @@ bool updatePieceCount(GameBoard* board,int player,char piece, int incOrDec) {
 		switch (piece)
 		{
 		case 'J':
-			board->player2Jokers += incOrDec;
-			return (board->player2Jokers <= NUM_OF_J);
+			board->pieceCountMap["player2Jokers"] += incOrDec;
+			return (board->pieceCountMap["player2Jokers"] <= NUM_OF_J);
 			break;
 		case 'R':
-			board->player2Rocks += incOrDec;
-			return (board->player2Rocks <= NUM_OF_R);
+			board->pieceCountMap["player2Rocks"] += incOrDec;
+			return (board->pieceCountMap["player2Rocks"] <= NUM_OF_R);
 			break;
 		case 'P':
-			board->player2Papers += incOrDec;
-			return (board->player2Papers <= NUM_OF_P);
+			board->pieceCountMap["player2Papers"] += incOrDec;
+			return (board->pieceCountMap["player2Papers"] <= NUM_OF_P);
 			break;
 		case 'S':
-			board->player2Scissors += incOrDec;
-			return (board->player2Scissors <= NUM_OF_S);
+			board->pieceCountMap["player2Scissors"] += incOrDec;
+			return (board->pieceCountMap["player2Scissors"] <= NUM_OF_S);
 			break;
 		case 'B':
-			board->player2Bombs += incOrDec;
-			return (board->player2Bombs <= NUM_OF_B);
+			board->pieceCountMap["player2Bombs"] += incOrDec;
+			return (board->pieceCountMap["player2Bombs"] <= NUM_OF_B);
 			break;
 		case 'F':
-			board->player2Flags += incOrDec;
-			return (board->player2Flags <= NUM_OF_F);
+			board->pieceCountMap["player2Flags"] += incOrDec;
+			return (board->pieceCountMap["player2Flags"] <= NUM_OF_F);
 			break;
 		}
 	}
@@ -216,14 +224,68 @@ void putPieceOnPlayerBoard(GameBoard* board, int player, int row, int col,GamePi
 // checks if a given player has enough flags (as many as needed)
 bool isEnoughFlags(GameBoard* board, int player) {
 	if (player == 1)
-		return board->player1Flags == NUM_OF_F;
-	return board->player2Flags == NUM_OF_F;
+		return board->pieceCountMap["player1Flags"] == NUM_OF_F;
+	return board->pieceCountMap["player2Flags"] == NUM_OF_F;
 }
+
+bool checkPositioningCommandVectorIsValid(vector<string>* myVec, int curLineNum) {
+	vector<string>& myCommandVec = *myVec;
+	if (myCommandVec.size() > 4 || myCommandVec.size() < 3) {
+		cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
+		return false;
+	}
+	if (myCommandVec[0].length() != 1 || (myCommandVec.size() == 4 && myCommandVec[3].length() != 1)) {
+		cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
+		return false;
+	}
+	if (!isLegalPieceChar(myCommandVec[0][0])) {
+		cout << "Bad format: illegal piece character in line " << curLineNum << endl;
+		return false;
+	}
+	if (!isLegalBoardCol(myCommandVec[1]) || !isLegalBoardRow(myCommandVec[2])) {
+		cout << "Bad format: illegal index on line " << curLineNum << endl;
+		return false;
+	}
+	if (myCommandVec[0][0] == 'J') {
+		if (myCommandVec.size() != 4) {
+			cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
+			return false;
+		}
+		if (!isLegalJokerTypeChar(myCommandVec[3][0])) {
+			cout << "Bad format: illegal piece character for Joker type in line " << curLineNum << endl;
+			return false;
+		}
+	}
+	return true;
+}
+
+
+bool handlePositioningLine(GameBoard* board, vector<string>* myVec, int curLineNum, int player) {
+	vector<string>& myCommandVec = *myVec;
+	GamePiece* curPiece = NULL;
+	
+	if (!isSquareEmpty(board, player, stoi(myCommandVec[2]) - 1, stoi(myCommandVec[1]) - 1)) {
+		cout << "Bad format: square is not empty for piece on line " << curLineNum << endl;
+		return false;
+	}
+	curPiece = new GamePiece(myCommandVec[0][0], myCommandVec[0][0], player);
+	if (myCommandVec.size() == 4)
+		curPiece->curPieceType = myCommandVec[3][0];
+	putPieceOnPlayerBoard(board, player, stoi(myCommandVec[2]) - 1, stoi(myCommandVec[1]) - 1, curPiece); //putting the piece on the player's board
+	if (!updatePieceCount(board, player, curPiece->pieceType, 1)) { //checking there aren't too many instances of the current piece
+		cout << "Bad format: too many instances of " << curPiece->pieceType << " on line " << curLineNum << endl;
+		delete curPiece;
+		return false;
+	}
+	return true;
+}
+
 
 //Given a player's positioning file, positions all of it's pieces on his board
 bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 	string curLine,token;
 	GamePiece* curPiece = NULL;
+	vector<string> myWordVec;
 	int curLineNum = 0,curCol=0,curRow=0;
 	ifstream fin(fileName);
 	istringstream iss;
@@ -234,109 +296,10 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 			fin.close();
 			return false;
 		}
+		myWordVec.clear();
 		curLineNum++;
-		iss.str(curLine);
-		iss.clear();
-		if (getline(iss, token, ' ')) { 
-			if (token.length() != 1) { //if piece char is not sized correctly
-				cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
-				handlePositioningError(board, player, curLineNum);
-				fin.close();
-				return true;
-			}
-			if (!isLegalPieceChar(token[0])) { // if piece char is sized correctly but not legal
-				cout << "Bad format: illegal piece character in line " << curLineNum << endl;
-				handlePositioningError(board, player, curLineNum);
-				fin.close();
-				return true;
-			}
-		}
-		else { 
-			cout << "Bad format: position is too short on line " << curLineNum << endl;
-			handlePositioningError(board, player, curLineNum);
-			fin.close();
-			return true;
-		}
-		curPiece = new GamePiece(token[0], token[0],player);
-		if (getline(iss, token, ' ')) {
-			if (!isLegalBoardCol(token)) {
-				cout << "Bad format: illegal index on line " << curLineNum << endl;
-				handlePositioningError(board, player, curLineNum);
-				delete curPiece;
-				fin.close();
-				return true;
-			}
-			curCol = stoi(token);
-		}
-		else {
-			cout << "Bad format: position is too short on line " << curLineNum << endl;
-			handlePositioningError(board, player, curLineNum);
-			fin.close();
-			return true;
-		}
-		if (getline(iss, token, ' ')) {
-			if (!isLegalBoardRow(token)) {
-				cout << "Bad format: illegal index on line " << curLineNum << endl;
-				handlePositioningError(board, player, curLineNum);
-				delete curPiece;
-				fin.close();
-				return true;
-			}
-			curRow = stoi(token);
-		}
-		else {
-			cout << "Bad format: position is too short on line " << curLineNum << endl;
-			handlePositioningError(board, player, curLineNum);
-			delete curPiece;
-			fin.close();
-			return true;
-		}
-		if (curPiece->curPieceType != 'J') {
-			if (getline(iss, token, ' ')) { //if there are more letters after position (and piece is not joker)
-				if (curPiece)
-					cout << "Bad format: position is too long on line " << curLineNum << endl;
-				handlePositioningError(board, player, curLineNum);
-				delete curPiece;
-				fin.close();
-				return true;
-			}
-		}
-		else { //curPiece is joker
-			if (getline(iss, token, ' ')) { //trying to get a char representing the piece's type
-				if (token.length() != 1) { //if piece char is not sized correctly
-					cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
-					handlePositioningError(board, player, curLineNum);
-					delete curPiece;
-					fin.close();
-					return true;
-				}
-				if (!isLegalJokerTypeChar(token[0])) { // if piece char is sized correctly but not legal
-					cout << "Bad format: illegal piece character for Joker type in line " << curLineNum << endl;
-					handlePositioningError(board, player, curLineNum);
-					delete curPiece;
-					fin.close();
-					return true;
-				}
-			}
-			else { //getline was false - couldn't find a char to use
-				cout << "Bad format: position is too short on line " << curLineNum << endl;
-				handlePositioningError(board, player, curLineNum);
-				delete curPiece;
-				fin.close();
-				return true;
-			}
-			curPiece->curPieceType = token[0];
-		}
-		if (!isSquareEmpty(board,player, curRow-1, curCol-1)) { //checking if the player already put a piece on this square
-			cout << "Bad format: square is not empty for piece on line " << curLineNum << endl;
-			handlePositioningError(board, player, curLineNum);
-			delete curPiece;
-			fin.close();
-			return true;
-		}
-		putPieceOnPlayerBoard(board, player, curRow-1, curCol-1, curPiece); //putting the piece on the player's board
-		if (!updatePieceCount(board, player, curPiece->pieceType, 1)) { //checking there aren't too many instances of the current piece
-			cout << "Bad format: too many instances of " << curPiece->pieceType << " on line " << curLineNum << endl;
+		parseStringIntoVector(&myWordVec, curLine);
+		if (!checkPositioningCommandVectorIsValid(&myWordVec, curLineNum) || !handlePositioningLine(board,&myWordVec,curLineNum,player)) {
 			handlePositioningError(board, player, curLineNum);
 			fin.close();
 			return true;
@@ -350,6 +313,143 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 	}
 	fin.close();
 	return true;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//	if (getline(iss, token, ' ')) { 
+	//		if (token.length() != 1) { //if piece char is not sized correctly
+	//			cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
+	//			handlePositioningError(board, player, curLineNum);
+	//			fin.close();
+	//			return true;
+	//		}
+	//		if (!isLegalPieceChar(token[0])) { // if piece char is sized correctly but not legal
+	//			cout << "Bad format: illegal piece character in line " << curLineNum << endl;
+	//			handlePositioningError(board, player, curLineNum);
+	//			fin.close();
+	//			return true;
+	//		}
+	//	}
+	//	else { 
+	//		cout << "Bad format: position is too short on line " << curLineNum << endl;
+	//		handlePositioningError(board, player, curLineNum);
+	//		fin.close();
+	//		return true;
+	//	}
+	//	curPiece = new GamePiece(token[0], token[0],player);
+	//	if (getline(iss, token, ' ')) {
+	//		if (!isLegalBoardCol(token)) {
+	//			cout << "Bad format: illegal index on line " << curLineNum << endl;
+	//			handlePositioningError(board, player, curLineNum);
+	//			delete curPiece;
+	//			fin.close();
+	//			return true;
+	//		}
+	//		curCol = stoi(token);
+	//	}
+	//	else {
+	//		cout << "Bad format: position is too short on line " << curLineNum << endl;
+	//		handlePositioningError(board, player, curLineNum);
+	//		fin.close();
+	//		return true;
+	//	}
+	//	if (getline(iss, token, ' ')) {
+	//		if (!isLegalBoardRow(token)) {
+	//			cout << "Bad format: illegal index on line " << curLineNum << endl;
+	//			handlePositioningError(board, player, curLineNum);
+	//			delete curPiece;
+	//			fin.close();
+	//			return true;
+	//		}
+	//		curRow = stoi(token);
+	//	}
+	//	else {
+	//		cout << "Bad format: position is too short on line " << curLineNum << endl;
+	//		handlePositioningError(board, player, curLineNum);
+	//		delete curPiece;
+	//		fin.close();
+	//		return true;
+	//	}
+	//	if (curPiece->curPieceType != 'J') {
+	//		if (getline(iss, token, ' ')) { //if there are more letters after position (and piece is not joker)
+	//			if (curPiece)
+	//				cout << "Bad format: position is too long on line " << curLineNum << endl;
+	//			handlePositioningError(board, player, curLineNum);
+	//			delete curPiece;
+	//			fin.close();
+	//			return true;
+	//		}
+	//	}
+	//	else { //curPiece is joker
+	//		if (getline(iss, token, ' ')) { //trying to get a char representing the piece's type
+	//			if (token.length() != 1) { //if piece char is not sized correctly
+	//				cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
+	//				handlePositioningError(board, player, curLineNum);
+	//				delete curPiece;
+	//				fin.close();
+	//				return true;
+	//			}
+	//			if (!isLegalJokerTypeChar(token[0])) { // if piece char is sized correctly but not legal
+	//				cout << "Bad format: illegal piece character for Joker type in line " << curLineNum << endl;
+	//				handlePositioningError(board, player, curLineNum);
+	//				delete curPiece;
+	//				fin.close();
+	//				return true;
+	//			}
+	//		}
+	//		else { //getline was false - couldn't find a char to use
+	//			cout << "Bad format: position is too short on line " << curLineNum << endl;
+	//			handlePositioningError(board, player, curLineNum);
+	//			delete curPiece;
+	//			fin.close();
+	//			return true;
+	//		}
+	//		curPiece->curPieceType = token[0];
+	//	}
+	//	if (!isSquareEmpty(board,player, curRow-1, curCol-1)) { //checking if the player already put a piece on this square
+	//		cout << "Bad format: square is not empty for piece on line " << curLineNum << endl;
+	//		handlePositioningError(board, player, curLineNum);
+	//		delete curPiece;
+	//		fin.close();
+	//		return true;
+	//	}
+	//	putPieceOnPlayerBoard(board, player, curRow-1, curCol-1, curPiece); //putting the piece on the player's board
+	//	if (!updatePieceCount(board, player, curPiece->pieceType, 1)) { //checking there aren't too many instances of the current piece
+	//		cout << "Bad format: too many instances of " << curPiece->pieceType << " on line " << curLineNum << endl;
+	//		handlePositioningError(board, player, curLineNum);
+	//		fin.close();
+	//		return true;
+	//	}
+	//}
+	//if (!isEnoughFlags(board, player)) { //checking the player has enough flags (finished the while loop, positioning finished
+	//	cout << "Bad format: missing flags - flags are not positioned according to their number " << endl;
+	//	handlePositioningError(board, player, curLineNum);
+	//	fin.close();
+	//	return true;
+	//}
+	//fin.close();
+	//return true;
 }
 
 // Simulates a fight between 2 pieces - returns a pointer to the winner
@@ -461,14 +561,14 @@ bool hasOtherPlayerWon(GameBoard* board, int curPlayer) {
 		return true;
 	}
 	if (curPlayer == 1) {
-		if (board->player1Flags == 0) {
+		if (board->pieceCountMap["player1Flags"] == 0) {
 			board->winner = 2;
 			board->reason = "All flags of the opponent are captured";
 			return true;
 		}
 	}
 	if (curPlayer == 2) {
-		if (board->player2Flags == 0) {
+		if (board->pieceCountMap["player2Flags"] == 0) {
 			board->winner = 1;
 			board->reason = "All flags of the opponent are captured";
 			return true;

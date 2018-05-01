@@ -2,23 +2,25 @@
 #ifndef GAMEBOARD_H_
 #include <string>
 #include "GamePiece.h"
+#include <map>
 #define N 10
 #define M 10
 using namespace std;
 class GameBoard {
 public:
-	int player1Flags;
-	int player1Jokers;
-	int player1Rocks;
-	int player1Scissors;
-	int player1Papers;
-	int player1Bombs;
-	int player2Flags;
-	int player2Jokers;
-	int player2Rocks;
-	int player2Scissors;
-	int player2Papers;
-	int player2Bombs;
+	map<string, int> pieceCountMap;
+	//int player1flags;
+	//int player1jokers;
+	//int player1rocks;
+	//int player1scissors;
+	//int player1papers;
+	//int player1bombs;
+	//int player2flags;
+	//int player2jokers;
+	//int player2rocks;
+	//int player2scissors;
+	//int player2papers;
+	//int player2bombs;
 	int winner;						//0-draw, 1-player1, 2-player2
 	int errorLinePlayer1;
 	int errorLinePlayer2;

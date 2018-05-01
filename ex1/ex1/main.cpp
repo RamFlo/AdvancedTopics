@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <vector>
 using namespace std;
 
 /*
@@ -23,10 +24,13 @@ int main() {
 		return 0;
 	}
 	mergeBoardsToFinalBoard(&board);
-	if (board.player1Flags == 0 && board.player2Flags == 0) {
+	if (board.pieceCountMap["player1Flags"] == 0 && board.pieceCountMap["player2Flags"] == 0) {
 		board.reason = "A tie - all flags are eaten by both players in position files";
 		board.winner = 0;
+		createOutputFile(&board);
+		return 0;
 	}
+
 	if (!executeMoves(&board)) {
 		cout << "Could not open a moves file" << endl;
 		return 0;
