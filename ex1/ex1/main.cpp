@@ -25,7 +25,7 @@ int main() {
 	}
 	mergeBoardsToFinalBoard(&board);
 	if (board.pieceCountMap["player1Flags"] == 0 && board.pieceCountMap["player2Flags"] == 0) {
-		board.reason = "A tie - all flags are eaten by both players in position files";
+		board.reason = "A tie - all flags are eaten by both players in the position files";
 		board.winner = 0;
 		createOutputFile(&board);
 		return 0;

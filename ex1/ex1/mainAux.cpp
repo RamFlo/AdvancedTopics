@@ -313,143 +313,6 @@ bool doPiecePositioning(GameBoard* board, string fileName, int player) {
 	}
 	fin.close();
 	return true;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//	if (getline(iss, token, ' ')) { 
-	//		if (token.length() != 1) { //if piece char is not sized correctly
-	//			cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
-	//			handlePositioningError(board, player, curLineNum);
-	//			fin.close();
-	//			return true;
-	//		}
-	//		if (!isLegalPieceChar(token[0])) { // if piece char is sized correctly but not legal
-	//			cout << "Bad format: illegal piece character in line " << curLineNum << endl;
-	//			handlePositioningError(board, player, curLineNum);
-	//			fin.close();
-	//			return true;
-	//		}
-	//	}
-	//	else { 
-	//		cout << "Bad format: position is too short on line " << curLineNum << endl;
-	//		handlePositioningError(board, player, curLineNum);
-	//		fin.close();
-	//		return true;
-	//	}
-	//	curPiece = new GamePiece(token[0], token[0],player);
-	//	if (getline(iss, token, ' ')) {
-	//		if (!isLegalBoardCol(token)) {
-	//			cout << "Bad format: illegal index on line " << curLineNum << endl;
-	//			handlePositioningError(board, player, curLineNum);
-	//			delete curPiece;
-	//			fin.close();
-	//			return true;
-	//		}
-	//		curCol = stoi(token);
-	//	}
-	//	else {
-	//		cout << "Bad format: position is too short on line " << curLineNum << endl;
-	//		handlePositioningError(board, player, curLineNum);
-	//		fin.close();
-	//		return true;
-	//	}
-	//	if (getline(iss, token, ' ')) {
-	//		if (!isLegalBoardRow(token)) {
-	//			cout << "Bad format: illegal index on line " << curLineNum << endl;
-	//			handlePositioningError(board, player, curLineNum);
-	//			delete curPiece;
-	//			fin.close();
-	//			return true;
-	//		}
-	//		curRow = stoi(token);
-	//	}
-	//	else {
-	//		cout << "Bad format: position is too short on line " << curLineNum << endl;
-	//		handlePositioningError(board, player, curLineNum);
-	//		delete curPiece;
-	//		fin.close();
-	//		return true;
-	//	}
-	//	if (curPiece->curPieceType != 'J') {
-	//		if (getline(iss, token, ' ')) { //if there are more letters after position (and piece is not joker)
-	//			if (curPiece)
-	//				cout << "Bad format: position is too long on line " << curLineNum << endl;
-	//			handlePositioningError(board, player, curLineNum);
-	//			delete curPiece;
-	//			fin.close();
-	//			return true;
-	//		}
-	//	}
-	//	else { //curPiece is joker
-	//		if (getline(iss, token, ' ')) { //trying to get a char representing the piece's type
-	//			if (token.length() != 1) { //if piece char is not sized correctly
-	//				cout << "Bad format: input size inconsistent with given instructions on line " << curLineNum << endl;
-	//				handlePositioningError(board, player, curLineNum);
-	//				delete curPiece;
-	//				fin.close();
-	//				return true;
-	//			}
-	//			if (!isLegalJokerTypeChar(token[0])) { // if piece char is sized correctly but not legal
-	//				cout << "Bad format: illegal piece character for Joker type in line " << curLineNum << endl;
-	//				handlePositioningError(board, player, curLineNum);
-	//				delete curPiece;
-	//				fin.close();
-	//				return true;
-	//			}
-	//		}
-	//		else { //getline was false - couldn't find a char to use
-	//			cout << "Bad format: position is too short on line " << curLineNum << endl;
-	//			handlePositioningError(board, player, curLineNum);
-	//			delete curPiece;
-	//			fin.close();
-	//			return true;
-	//		}
-	//		curPiece->curPieceType = token[0];
-	//	}
-	//	if (!isSquareEmpty(board,player, curRow-1, curCol-1)) { //checking if the player already put a piece on this square
-	//		cout << "Bad format: square is not empty for piece on line " << curLineNum << endl;
-	//		handlePositioningError(board, player, curLineNum);
-	//		delete curPiece;
-	//		fin.close();
-	//		return true;
-	//	}
-	//	putPieceOnPlayerBoard(board, player, curRow-1, curCol-1, curPiece); //putting the piece on the player's board
-	//	if (!updatePieceCount(board, player, curPiece->pieceType, 1)) { //checking there aren't too many instances of the current piece
-	//		cout << "Bad format: too many instances of " << curPiece->pieceType << " on line " << curLineNum << endl;
-	//		handlePositioningError(board, player, curLineNum);
-	//		fin.close();
-	//		return true;
-	//	}
-	//}
-	//if (!isEnoughFlags(board, player)) { //checking the player has enough flags (finished the while loop, positioning finished
-	//	cout << "Bad format: missing flags - flags are not positioned according to their number " << endl;
-	//	handlePositioningError(board, player, curLineNum);
-	//	fin.close();
-	//	return true;
-	//}
-	//fin.close();
-	//return true;
 }
 
 // Simulates a fight between 2 pieces - returns a pointer to the winner
@@ -598,115 +461,179 @@ bool isLegalMoveFromSourceSquare(GameBoard* board, int curPlayer, int srcCol, in
 	return false;
 }
 
-// executes a given move for a given player.
-//return value - false: bad format. true: move executed
-bool executePlayerMove(GameBoard* board, int player, string move, int curLineNum) {
-	int srcCol = 0, srcRow = 0, destCol = 0, destRow = 0,i=0,jCol=0,jRow=0;
-	char jokerNewType = '\0';
-	string token;
-	istringstream iss(move);
-	for (i = 0; i < 4; i++) {
-		if (getline(iss, token, ' ')) { //tries to take the next input index
-			if (((i == 1 || i == 3) && !isLegalBoardRow(token)) || ((i == 0 || i == 2) && !isLegalBoardCol(token))) { //checks if legal
-				cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
-				handleMovingFileError(board, player, curLineNum);
-				iss.clear();
-				return false;
-			}//updates relevant src/dest row/col
-			if (i == 0)
-				srcCol = stoi(token);
-			if (i == 1)
-				srcRow = stoi(token);
-			if (i == 2)
-				destCol = stoi(token);
-			if (i == 3)
-				destRow = stoi(token);
-		}
-		else { //getline failed on a certain iteration - could not get index
-			cout << "Bad format: move command is too short by player " << player << " on line " << curLineNum << endl;
-			handleMovingFileError(board, player, curLineNum);
-			iss.clear();
-			return false;
-		}
-	} //at this point, we have all src/dest row/col indexes
-	if (getline(iss, token, ' ')) { //checks if there is a joker change of type given
-		if (token == "J:") { 
-			for (i = 0; i < 2; i++) {
-				if (getline(iss, token, ' ')) { //tries to get the index of the joker (2 indexes, done 2 times)
-					if ((i == 1 && !isLegalBoardRow(token)) || (i == 0 && !isLegalBoardCol(token))) {
-						cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
-						handleMovingFileError(board, player, curLineNum);
-						iss.clear();
-						return false;
-					}//updates relevant joker row/col
-					if (i == 0)
-						jCol = stoi(token);
-					if (i == 1)
-						jRow = stoi(token);
-				}
-				else { //getline failed - at least one index missing
-					cout << "Bad format: move command is too short by player " << player << " on line " << curLineNum << endl;
-					handleMovingFileError(board, player, curLineNum);
-					iss.clear();
-					return false;
-				}
-			}
-			if (getline(iss, token, ' ')) { //gets the new curType of the given joker
-				if (token.length() != 1) {
-					cout << "Bad format: move input size by player " << player << " inconsistent with given instructions on line " << curLineNum << endl;
-					handleMovingFileError(board, player, curLineNum);
-					iss.clear();
-					return false;
-				}
-				if (!isLegalJokerTypeChar(token[0])) { //checks given curType is legal
-					cout << "Bad format: illegal move command joker type by player " << player << " on line " << curLineNum << endl;
-					handleMovingFileError(board, player, curLineNum);
-					iss.clear();
-					return false;
-				}
-				jokerNewType = token[0];
-			}
-			else { //getline failed - joker's new type is missing
-				cout << "Bad format: move command is too short by player " << player << " on line " << curLineNum << endl;
-				handleMovingFileError(board, player, curLineNum);
-				iss.clear();
-				return false;
-			}
-		}
-		else { //an extra char/string was given, and it isn't J: - meaning it's an error
-			cout << "Bad format: bad character at move command player " << player << " on line " << curLineNum << endl;
-			handleMovingFileError(board, player, curLineNum);
-			iss.clear();
-			return false;
-		}
-	}
-	
-	if (!isLegalPieceInSourceSquare(board, player, srcCol, srcRow)) { //checks that the src square holds a legal piece for the player
-		cout << "Bad format: illegal move command's source square chosen by player " << player << " on line " << curLineNum << endl;
-		handleMovingFileError(board, player, curLineNum);
-		iss.clear();
+bool isLegalMoveCommandVec(vector<string>* myVec, int curLineNum, int player) {
+	vector<string> myCommandVec = *myVec;
+	if (myCommandVec.size() != 4 && myCommandVec.size() != 8) {
+		cout << "Bad format: move command length is inconsistent with instructions by player " << player << " on line " << curLineNum << endl;
 		return false;
 	}
-	if (!isLegalMoveFromSourceSquare(board, player, srcCol, srcRow, destCol, destRow)) { //checks if dest square is legal
-		cout << "Bad format: illegal move command's destination square chosen by player " << player << " on line " << curLineNum << endl;
-		handleMovingFileError(board, player, curLineNum);
-		iss.clear();
+	if (!isLegalBoardRow(myCommandVec[1]) || !isLegalBoardRow(myCommandVec[3]) || !isLegalBoardCol(myCommandVec[0]) || !isLegalBoardCol(myCommandVec[2])) {
+		cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
 		return false;
-	} //updates the board - does fight between the pieces if necessary
-	board->finalBoard[destRow - 1][destCol - 1] = fight(board,board->finalBoard[srcRow - 1][srcCol - 1], board->finalBoard[destRow - 1][destCol - 1]);
-	board->finalBoard[srcRow - 1][srcCol - 1] = NULL;
-
-	if (jokerNewType != '\0') { //There was a joker change of type in the command
-		if ((board->finalBoard[jRow - 1][jCol - 1] != NULL) && (board->finalBoard[jRow - 1][jCol - 1]->pieceType == 'J')&&(board->finalBoard[jRow - 1][jCol - 1]->player = player))
-			board->finalBoard[jRow - 1][jCol - 1]->curPieceType = jokerNewType;
-		else { //there isn't a joker in the specified joker square
-			cout << "Bad format: illegal joker updating command specified by player " << player << " on line " << curLineNum << endl;
-			handleMovingFileError(board, player, curLineNum);
-			iss.clear();
+	}
+	if (myCommandVec.size() == 8) {
+		if (myCommandVec[4] != "J:") {
+			cout << "Bad format: illegal move command by player " << player << " on line " << curLineNum << endl;
+			return false;
+		}
+		if (!isLegalBoardRow(myCommandVec[6]) || !isLegalBoardCol(myCommandVec[5])) {
+			cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
+			return false;
+		}
+		if (!isLegalJokerTypeChar(myCommandVec[7][0])) {
+			cout << "Bad format: illegal move command joker type by player " << player << " on line " << curLineNum << endl;
 			return false;
 		}
 	}
 	return true;
+}
+
+bool handleMoveCommand(GameBoard* board, int player, vector<string>* myVec, int curLineNum) {
+	vector<string> myCommandVec = *myVec;
+	int srcCol = stoi(myCommandVec[0]), srcRow = stoi(myCommandVec[1]), dstCol = stoi(myCommandVec[2]), dstRow = stoi(myCommandVec[3]), jRow = 0, jCol = 0;
+	char jokerNewType = '\0';
+	if (!isLegalPieceInSourceSquare(board, player, srcCol, srcRow)) { //checks that the src square holds a legal piece for the player
+		cout << "Bad format: illegal move command's source square chosen by player " << player << " on line " << curLineNum << endl;
+		return false;
+	}
+	if (!isLegalMoveFromSourceSquare(board, player, srcCol, srcRow, dstCol, dstRow)) { //checks if dest square is legal
+		cout << "Bad format: illegal move command's destination square chosen by player " << player << " on line " << curLineNum << endl;
+		return false;
+	} //updates the board - does fight between the pieces if necessary
+	board->finalBoard[dstRow - 1][dstCol - 1] = fight(board, board->finalBoard[srcRow - 1][srcCol - 1], board->finalBoard[dstRow - 1][dstCol - 1]);
+	board->finalBoard[srcRow - 1][srcCol - 1] = NULL;
+
+	if (myCommandVec.size() == 8) { //There was a joker change of type in the command
+		jCol = stoi(myCommandVec[5]);
+		jRow = stoi(myCommandVec[6]);
+		jokerNewType = myCommandVec[7][0];
+		if ((board->finalBoard[jRow - 1][jCol - 1] != NULL) && (board->finalBoard[jRow - 1][jCol - 1]->pieceType == 'J') && (board->finalBoard[jRow - 1][jCol - 1]->player = player))
+			board->finalBoard[jRow - 1][jCol - 1]->curPieceType = jokerNewType;
+		else { //there isn't a joker in the specified joker square
+			cout << "Bad format: illegal joker updating command specified by player " << player << " on line " << curLineNum << endl;
+			return false;
+		}
+	}
+	return true;
+}
+
+// executes a given move for a given player.
+//return value - false: bad format. true: move executed
+bool executePlayerMove(GameBoard* board, int player, string move, int curLineNum) {
+	vector<string> myVec;
+	parseStringIntoVector(&myVec, move);
+	if (!isLegalMoveCommandVec(&myVec, curLineNum, player) || !handleMoveCommand(board,player,&myVec,curLineNum)) {
+		handleMovingFileError(board, player, curLineNum);
+		return false;
+	}
+	return true;
+	
+
+
+	//string token;
+	//istringstream iss(move);
+	//for (i = 0; i < 4; i++) {
+	//	if (getline(iss, token, ' ')) { //tries to take the next input index
+	//		if (((i == 1 || i == 3) && !isLegalBoardRow(token)) || ((i == 0 || i == 2) && !isLegalBoardCol(token))) { //checks if legal
+	//			cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
+	//			handleMovingFileError(board, player, curLineNum);
+	//			iss.clear();
+	//			return false;
+	//		}//updates relevant src/dest row/col
+	//		if (i == 0)
+	//			srcCol = stoi(token);
+	//		if (i == 1)
+	//			srcRow = stoi(token);
+	//		if (i == 2)
+	//			destCol = stoi(token);
+	//		if (i == 3)
+	//			destRow = stoi(token);
+	//	}
+	//	else { //getline failed on a certain iteration - could not get index
+	//		cout << "Bad format: move command is too short by player " << player << " on line " << curLineNum << endl;
+	//		handleMovingFileError(board, player, curLineNum);
+	//		iss.clear();
+	//		return false;
+	//	}
+	//} //at this point, we have all src/dest row/col indexes
+	//if (getline(iss, token, ' ')) { //checks if there is a joker change of type given
+	//	if (token == "J:") { 
+	//		for (i = 0; i < 2; i++) {
+	//			if (getline(iss, token, ' ')) { //tries to get the index of the joker (2 indexes, done 2 times)
+	//				if ((i == 1 && !isLegalBoardRow(token)) || (i == 0 && !isLegalBoardCol(token))) {
+	//					cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
+	//					handleMovingFileError(board, player, curLineNum);
+	//					iss.clear();
+	//					return false;
+	//				}//updates relevant joker row/col
+	//				if (i == 0)
+	//					jCol = stoi(token);
+	//				if (i == 1)
+	//					jRow = stoi(token);
+	//			}
+	//			else { //getline failed - at least one index missing
+	//				cout << "Bad format: move command is too short by player " << player << " on line " << curLineNum << endl;
+	//				handleMovingFileError(board, player, curLineNum);
+	//				iss.clear();
+	//				return false;
+	//			}
+	//		}
+	//		if (getline(iss, token, ' ')) { //gets the new curType of the given joker
+	//			if (token.length() != 1) {
+	//				cout << "Bad format: move input size by player " << player << " inconsistent with given instructions on line " << curLineNum << endl;
+	//				handleMovingFileError(board, player, curLineNum);
+	//				iss.clear();
+	//				return false;
+	//			}
+	//			if (!isLegalJokerTypeChar(token[0])) { //checks given curType is legal
+	//				cout << "Bad format: illegal move command joker type by player " << player << " on line " << curLineNum << endl;
+	//				handleMovingFileError(board, player, curLineNum);
+	//				iss.clear();
+	//				return false;
+	//			}
+	//			jokerNewType = token[0];
+	//		}
+	//		else { //getline failed - joker's new type is missing
+	//			cout << "Bad format: move command is too short by player " << player << " on line " << curLineNum << endl;
+	//			handleMovingFileError(board, player, curLineNum);
+	//			iss.clear();
+	//			return false;
+	//		}
+	//	}
+	//	else { //an extra char/string was given, and it isn't J: - meaning it's an error
+	//		cout << "Bad format: bad character at move command player " << player << " on line " << curLineNum << endl;
+	//		handleMovingFileError(board, player, curLineNum);
+	//		iss.clear();
+	//		return false;
+	//	}
+	//}
+	
+	//if (!isLegalPieceInSourceSquare(board, player, srcCol, srcRow)) { //checks that the src square holds a legal piece for the player
+	//	cout << "Bad format: illegal move command's source square chosen by player " << player << " on line " << curLineNum << endl;
+	//	handleMovingFileError(board, player, curLineNum);
+	//	iss.clear();
+	//	return false;
+	//}
+	//if (!isLegalMoveFromSourceSquare(board, player, srcCol, srcRow, destCol, destRow)) { //checks if dest square is legal
+	//	cout << "Bad format: illegal move command's destination square chosen by player " << player << " on line " << curLineNum << endl;
+	//	handleMovingFileError(board, player, curLineNum);
+	//	iss.clear();
+	//	return false;
+	//} //updates the board - does fight between the pieces if necessary
+	//board->finalBoard[destRow - 1][destCol - 1] = fight(board,board->finalBoard[srcRow - 1][srcCol - 1], board->finalBoard[destRow - 1][destCol - 1]);
+	//board->finalBoard[srcRow - 1][srcCol - 1] = NULL;
+
+	//if (jokerNewType != '\0') { //There was a joker change of type in the command
+	//	if ((board->finalBoard[jRow - 1][jCol - 1] != NULL) && (board->finalBoard[jRow - 1][jCol - 1]->pieceType == 'J')&&(board->finalBoard[jRow - 1][jCol - 1]->player = player))
+	//		board->finalBoard[jRow - 1][jCol - 1]->curPieceType = jokerNewType;
+	//	else { //there isn't a joker in the specified joker square
+	//		cout << "Bad format: illegal joker updating command specified by player " << player << " on line " << curLineNum << endl;
+	//		handleMovingFileError(board, player, curLineNum);
+	//		iss.clear();
+	//		return false;
+	//	}
+	//}
+	//return true;
 
 }
 
