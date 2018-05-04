@@ -19,13 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AllGameParameters.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="FightInfo.h" />
+    <ClInclude Include="FilePlayerAlgorithm.h" />
+    <ClInclude Include="FilePlayerParser.h" />
     <ClInclude Include="JokerChange.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="PiecePosition.h" />
     <ClInclude Include="PlayerAlgorithm.h" />
     <ClInclude Include="Point.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FilePlayerAlgorithm.cpp" />
+    <ClCompile Include="FilePlayerParser.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
