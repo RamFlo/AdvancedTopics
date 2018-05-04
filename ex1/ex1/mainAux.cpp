@@ -51,8 +51,8 @@ POSITIONING
 */
 
 bool isLegalNonNegativeNumber(string numString) {
-	int i = 0;
-	for (i = 0; i < numString.length(); i++) {
+	int i = 0,strSize= numString.length();
+	for (i = 0; i < strSize; i++) {
 		if (!isdigit(numString[i]))
 			return false;
 	}
