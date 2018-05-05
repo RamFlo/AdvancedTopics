@@ -87,36 +87,111 @@ void parseStringIntoVector(vector<string>* myVec, string str) {
 		myVec->push_back(buf);
 }
 
+bool isLegalMoveCommandVec(vector<string>* myVec, int curLineNum, int player) {
+	vector<string> myCommandVec = *myVec;
+	if (myCommandVec.size() != 4 && myCommandVec.size() != 8) {
+		//cout << "Bad format: move command length is inconsistent with instructions by player " << player << " on line " << curLineNum << endl;
+		return false;
+	}
+	if (!isLegalBoardRow(myCommandVec[1]) || !isLegalBoardRow(myCommandVec[3]) || !isLegalBoardCol(myCommandVec[0]) || !isLegalBoardCol(myCommandVec[2])) {
+		//cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
+		return false;
+	}
+	if (myCommandVec.size() == 8) {
+		if (myCommandVec[4] != "J:") {
+			//cout << "Bad format: illegal move command by player " << player << " on line " << curLineNum << endl;
+			return false;
+		}
+		if (!isLegalBoardRow(myCommandVec[6]) || !isLegalBoardCol(myCommandVec[5])) {
+			//cout << "Bad format: illegal move index by player " << player << " on line " << curLineNum << endl;
+			return false;
+		}
+		if (!isLegalJokerTypeChar(myCommandVec[7][0])) {
+			//cout << "Bad format: illegal move command joker type by player " << player << " on line " << curLineNum << endl;
+			return false;
+		}
+	}
+	return true;
+}
+
+void insertInvalidPositionIntoVector(std::vector<unique_ptr<PiecePosition>>& vectorToFill) {
+	vectorToFill.push_back(make_unique<GamePiece>('\0', -1, -1, '\0',-1));
+}
+
 void FilePlayerParser::parseInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill)
 {
 	string curLine, token, fileName = "player" + to_string(player) + ".rps_board";
-	//GamePiece* curPiece = NULL;
 	vector<string> myWordVec;
 	int curLineNum = 0, curCol = 0, curRow = 0;
 	ifstream fin(fileName);
-	istringstream iss;
-	if (fin.fail()) //checking if we could open the file
+	if (fin.fail()) { //checking if we could open the file
+		insertInvalidPositionIntoVector(vectorToFill);
 		return;
+	}
 	while (getline(fin, curLine)) { //returns false when reaching EOF
 		if (fin.bad()) {
 			fin.close();
-			return false;
+			insertInvalidPositionIntoVector(vectorToFill);
+			return;
 		}
 		myWordVec.clear();
 		curLineNum++;
 		parseStringIntoVector(&myWordVec, curLine);
-		if (!checkPositioningCommandVectorIsValid(&myWordVec, curLineNum) || !handlePositioningLine(board, &myWordVec, curLineNum, player)) {
-			handlePositioningError(board, player, curLineNum);
+		if (!checkPositioningCommandVectorIsValid(&myWordVec, curLineNum,player)){// || !handlePositioningLine(board, &myWordVec, curLineNum, player)) {
+			//handlePositioningError(board, player, curLineNum);
+			insertInvalidPositionIntoVector(vectorToFill);
 			fin.close();
-			return true;
+			return;
 		}
-	}
-	if (!isEnoughFlags(board, player)) { //checking the player has enough flags (finished the while loop, positioning finished
-		cout << "Bad format: missing flags - flags are not positioned according to their number " << endl;
-		handlePositioningError(board, player, curLineNum);
-		fin.close();
-		return true;
+		if (myWordVec.size()==3)
+			vectorToFill.push_back(make_unique<GamePiece>(myWordVec[0][0],stoi(myWordVec[1]), stoi(myWordVec[2]),'#',player ));
+		else
+			vectorToFill.push_back(make_unique<GamePiece>(myWordVec[0][0], stoi(myWordVec[1]), stoi(myWordVec[2]), myWordVec[3][0],player));
 	}
 	fin.close();
-	return true;
+	return;
+}
+
+void insertInvalidMoveIntoVector(std::vector<unique_ptr<Move>>& moveVectorToFill) {
+	moveVectorToFill.push_back(make_unique<GameMove>(-1, -1, -1, -1));
+}
+
+void insertInvalidJokerIntoVector(std::vector<unique_ptr<JokerChange>>& jokerVectorToFill) {
+	jokerVectorToFill.push_back(make_unique<GameJokerChange>(-1, -1, '\0'));
+}
+
+void FilePlayerParser::parseAllPlayerMoves(int player, std::vector<unique_ptr<Move>>& moveVectorToFill, std::vector<unique_ptr<JokerChange>>& jokerVectorToFill) {
+	string curLine, token, fileName = "player" + to_string(player) + ".rps_moves";
+	vector<string> myWordVec;
+	int curLineNum = 0, curSrcCol = 0, curSrcRow = 0;
+	ifstream fin(fileName);
+	if (fin.fail()) { //checking if we could open the file
+		insertInvalidMoveIntoVector(moveVectorToFill);
+		insertInvalidJokerIntoVector(jokerVectorToFill);
+		return;
+	}
+	while (getline(fin, curLine)) { //returns false when reaching EOF
+		if (fin.bad()) {
+			fin.close();
+			insertInvalidMoveIntoVector(moveVectorToFill);
+			insertInvalidJokerIntoVector(jokerVectorToFill);
+			return;
+		}
+		myWordVec.clear();
+		curLineNum++;
+		parseStringIntoVector(&myWordVec, curLine);
+		if (!isLegalMoveCommandVec(&myWordVec, curLineNum, player)) {
+			insertInvalidMoveIntoVector(moveVectorToFill);
+			insertInvalidJokerIntoVector(jokerVectorToFill);
+			fin.close();
+			return;
+		}
+		moveVectorToFill.push_back(make_unique<GameMove>(stoi(myWordVec[0]), stoi(myWordVec[1]), stoi(myWordVec[2]), stoi(myWordVec[3])));
+		if (myWordVec.size() == 4)
+			jokerVectorToFill.push_back(nullptr);
+		else
+			jokerVectorToFill.push_back(make_unique<GameJokerChange>(stoi(myWordVec[5]), stoi(myWordVec[6]), myWordVec[7][0]));
+	}
+	fin.close();
+	return;
 }

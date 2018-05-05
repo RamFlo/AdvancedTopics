@@ -15,7 +15,10 @@
 #include <sstream>
 #include <fstream>
 #include "PiecePosition.h"
+#include "GamePiece.h"
 #include "AllGameParameters.h"
+#include "GameJokerChange.h"
+#include "GameMove.h"
 
 using std::unique_ptr;
 using namespace std;
@@ -24,6 +27,7 @@ using namespace std;
 class FilePlayerParser {
 public:
 	void parseInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill);
+	void parseAllPlayerMoves(int player, std::vector<unique_ptr<Move>>& moveVectorToFill, std::vector<unique_ptr<JokerChange>>& jokerVectorToFill);
 	//~FilePlayerParser() {}
 };
 

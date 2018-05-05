@@ -24,8 +24,15 @@
     <ClInclude Include="FightInfo.h" />
     <ClInclude Include="FilePlayerAlgorithm.h" />
     <ClInclude Include="FilePlayerParser.h" />
+    <ClInclude Include="GameBoard.h" />
+    <ClInclude Include="GameFightInfo.h" />
+    <ClInclude Include="GameJokerChange.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameMove.h" />
+    <ClInclude Include="GamePiece.h" />
     <ClInclude Include="JokerChange.h" />
     <ClInclude Include="Move.h" />
+    <ClInclude Include="MyPoint.h" />
     <ClInclude Include="PiecePosition.h" />
     <ClInclude Include="PlayerAlgorithm.h" />
     <ClInclude Include="Point.h" />
@@ -33,6 +40,14 @@
   <ItemGroup>
     <ClCompile Include="FilePlayerAlgorithm.cpp" />
     <ClCompile Include="FilePlayerParser.cpp" />
+    <ClCompile Include="GameBoard.cpp" />
+    <ClCompile Include="GameFightInfo.cpp" />
+    <ClCompile Include="GameJokerChange.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameMove.cpp" />
+    <ClCompile Include="GamePiece.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyPoint.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
