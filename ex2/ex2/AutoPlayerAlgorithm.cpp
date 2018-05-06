@@ -130,8 +130,10 @@ void AutoPlayerAlgorithm::notifyFightResult(const FightInfo & fightInfo)
 	int srcCol = fightInfo.getPosition().getX();
 	int srcRow = fightInfo.getPosition().getY();
 	if (fightInfo.getWinner() != this->player) {
-		if (fightInfo.getWinner() == 0) 
+		if (fightInfo.getWinner() == 0) {
 			this->knowBoard->setGamePieceOnBoard(GamePiece('\0', srcCol, srcRow, '\0', 0), 0);
+			this->updateMyPieceCount(fightInfo.getPiece(this->player), -1);
+		}
 		else {
 			this->knowBoard->setGamePieceOnBoard(GamePiece(fightInfo.getPiece(fightInfo.getWinner()), srcCol, srcRow, '#', fightInfo.getWinner()), 0);
 			this->updateMyPieceCount(fightInfo.getPiece(this->player), -1);
@@ -163,7 +165,7 @@ bool AutoPlayerAlgorithm::doesPiece1BeatPiece2(char p1, char p2) {
 		return false;
 	else if (p2 == 'R')
 		return true;
-	return false;
+	return true;
 }
 
 
@@ -182,7 +184,7 @@ void AutoPlayerAlgorithm::findNearbyBeatablePiece(const Point & myPiecePosition,
 	}
 	if (col - 1 >= 1) {
 		opponentPiece = this->knowBoard->getGamePiece(MyPoint(col - 1, row)).getPiece();
-		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer();
+		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col - 1, row)).getPlayer();
 		if (dstPointPlayerNum != this->player && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
 			pointToFill.setX(col - 1);
 			pointToFill.setY(row);
@@ -191,7 +193,7 @@ void AutoPlayerAlgorithm::findNearbyBeatablePiece(const Point & myPiecePosition,
 	}
 	if (row + 1 <= N) {
 		opponentPiece = this->knowBoard->getGamePiece(MyPoint(col, row+1)).getPiece();
-		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer();
+		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col, row+1)).getPlayer();
 		if (dstPointPlayerNum != this->player && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
 			pointToFill.setX(col);
 			pointToFill.setY(row+1);
@@ -200,7 +202,7 @@ void AutoPlayerAlgorithm::findNearbyBeatablePiece(const Point & myPiecePosition,
 	}
 	if (row - 1 >= 1) {
 		opponentPiece = this->knowBoard->getGamePiece(MyPoint(col, row-1)).getPiece();
-		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer();
+		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col , row-1)).getPlayer();
 		if (dstPointPlayerNum != this->player && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
 			pointToFill.setX(col);
 			pointToFill.setY(row-1);
@@ -244,6 +246,7 @@ void AutoPlayerAlgorithm::findLegalMove(const Point & myPiecePosition, MyPoint& 
 unique_ptr<Move> AutoPlayerAlgorithm::getMove()
 {
 	int col, row, randIndexInPosVector;
+	char movingPieceType, movingPieceJokerRep;
 	vector<MyPoint> myPiecesPositions;
 	MyPoint pointToMoveTo(-1, -1);
 	for (col = 1; col <= M; col++) {
@@ -251,10 +254,14 @@ unique_ptr<Move> AutoPlayerAlgorithm::getMove()
 			if (this->knowBoard->getPlayer(MyPoint(col, row)) == this->player && this->isMoveablePiece(MyPoint(col, row))) {
 				myPiecesPositions.push_back(MyPoint(col, row));
 				findNearbyBeatablePiece(MyPoint(col, row), pointToMoveTo);
-				if (pointToMoveTo.getX() > 10)
-					int b = 3;
-				if (pointToMoveTo.getX() != -1)
+				if (pointToMoveTo.getX() != -1) {
+					movingPieceType = this->knowBoard->getGamePiece(MyPoint(col, row)).getPiece();
+					movingPieceJokerRep = this->knowBoard->getGamePiece(MyPoint(col, row)).getJokerRep();
+					//assuming that I won, even if I lost, since notify on fight result will correct me
+					this->knowBoard->setGamePieceOnBoard(GamePiece(movingPieceType, pointToMoveTo.getX(), pointToMoveTo.getY(), movingPieceJokerRep, this->player), this->player);
+					this->knowBoard->setGamePieceOnBoard(GamePiece('\0', col, row, '\0', 0), 0);
 					return make_unique<GameMove>(col, row, pointToMoveTo.getX(), pointToMoveTo.getY());
+				}
 			}
 		}
 	}
@@ -264,9 +271,12 @@ unique_ptr<Move> AutoPlayerAlgorithm::getMove()
 		randIndexInPosVector = rand() % myPiecesPositions.size();
 		findLegalMove(myPiecesPositions[randIndexInPosVector], pointToMoveTo);
 	}
-	if (pointToMoveTo.getX() > 10)
-		int b = 3;
-	return make_unique<GameMove>(col, row, pointToMoveTo.getX(), pointToMoveTo.getY());
+	movingPieceType = this->knowBoard->getGamePiece(myPiecesPositions[randIndexInPosVector]).getPiece();
+	movingPieceJokerRep = this->knowBoard->getGamePiece(myPiecesPositions[randIndexInPosVector]).getJokerRep();
+	//assuming that I won, even if I lost, since notify on fight result will correct me
+	this->knowBoard->setGamePieceOnBoard(GamePiece(movingPieceType, pointToMoveTo.getX(), pointToMoveTo.getY(), movingPieceJokerRep, this->player), this->player);
+	this->knowBoard->setGamePieceOnBoard(GamePiece('\0', myPiecesPositions[randIndexInPosVector].getX(), myPiecesPositions[randIndexInPosVector].getY(), '\0', 0), 0);
+	return make_unique<GameMove>(myPiecesPositions[randIndexInPosVector].getX(), myPiecesPositions[randIndexInPosVector].getY(), pointToMoveTo.getX(), pointToMoveTo.getY());
 }
 
 unique_ptr<JokerChange> AutoPlayerAlgorithm::getJokerChange()

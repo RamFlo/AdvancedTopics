@@ -2,6 +2,7 @@
 
 GameManager::GameManager(string gameMode)
 {
+
 	if (gameMode == "auto-vs-file") {
 		this->player1Algorithm = make_unique<AutoPlayerAlgorithm>(1);
 		this->player2Algorithm = make_unique<FilePlayerAlgorithm>(2);
@@ -143,63 +144,64 @@ bool GameManager::initializeBoardFromPositionsVector(vector<unique_ptr<PiecePosi
 }
 
 int GameManager::fightBetweenTwoPiecesAndUpdatePieceCount(char p1Piece, char p2Piece,char p1ActualPiece, char p2ActualPiece) {
+	int fightWinner = 0;
 	if (p1Piece == 'B' || p2Piece == 'B' || (p1Piece == p2Piece)) {
 		updatePieceCount(1, p1ActualPiece, -1);
 		updatePieceCount(2, p2ActualPiece, -1);
 	}
 	else if (p1Piece == 'F') {
 		updatePieceCount(1, p1ActualPiece, -1);
-		winner = 2;
+		fightWinner = 2;
 	}
 	else if (p2Piece == 'F') {
 		updatePieceCount(2, p2ActualPiece, -1);
-		winner = 1;
+		fightWinner = 1;
 	}
 	else if (p1Piece == 'S') {
 		if (p2Piece == 'R') {
 			updatePieceCount(1, p1ActualPiece, -1);
-			winner = 2;
+			fightWinner = 2;
 		}
 		else if (p2Piece == 'P') {
 			updatePieceCount(2, p2ActualPiece, -1);
-			winner = 1;
+			fightWinner = 1;
 		}
 	}
 	else if (p2Piece == 'S') {
 		if (p1Piece == 'R') {
 			updatePieceCount(2, p2ActualPiece, -1);
-			winner = 1;
+			fightWinner = 1;
 		}
 		else if (p1Piece == 'P') {
 			updatePieceCount(1, p1ActualPiece, -1);
-			winner = 2;
+			fightWinner = 2;
 		}
 	}
 	else if (p1Piece == 'R') {
 		updatePieceCount(1, p1ActualPiece, -1);
-		winner = 2;
+		fightWinner = 2;
 	}
 	else if (p2Piece == 'R') {
 		updatePieceCount(2, p2ActualPiece, -1);
-		winner = 1;
+		fightWinner = 1;
 	}
-	return winner;
+	return fightWinner;
 }
 
 // Simulates a fight between 2 pieces - returns a pointer to the winner
 void GameManager::fight(vector<unique_ptr<FightInfo>>& fightsVecToFill, Point& pos) { //given two pieces determines which piece wins
 	char p1, p2;
 	unique_ptr<FightInfo> curFightInfoPtr;
-	int winner = 0;
+	int fightWinner = 0;
 	bool shouldUpdateFightsVector = true;
 	if (this->p1InitialBoard->getPlayer(pos) == 0) {
 		shouldUpdateFightsVector = false;
 		if (this->p2InitialBoard->getPlayer(pos) != 0)
-			winner = 2;
+			fightWinner = 2;
 	}
 	else if (this->p2InitialBoard->getPlayer(pos) == 0) {
 		shouldUpdateFightsVector = false;
-		winner = 1;
+		fightWinner = 1;
 	}
 	else {
 		p1 = this->p1InitialBoard->getGamePiece(pos).getPiece();
@@ -208,7 +210,7 @@ void GameManager::fight(vector<unique_ptr<FightInfo>>& fightsVecToFill, Point& p
 			p1 = this->p1InitialBoard->getGamePiece(pos).getJokerRep();
 		if (p2 == 'J')
 			p2 = this->p1InitialBoard->getGamePiece(pos).getJokerRep();
-		winner = fightBetweenTwoPiecesAndUpdatePieceCount(p1, p2, p1InitialBoard->getGamePiece(pos).getPiece(), p2InitialBoard->getGamePiece(pos).getPiece());
+		fightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(p1, p2, p1InitialBoard->getGamePiece(pos).getPiece(), p2InitialBoard->getGamePiece(pos).getPiece());
 	}
 	/*if (p1 == 'B' || p2 == 'B' || (p1 == p2)) {
 		updatePieceCount(1, p1InitialBoard->getGamePiece(pos), -1);
@@ -251,12 +253,12 @@ void GameManager::fight(vector<unique_ptr<FightInfo>>& fightsVecToFill, Point& p
 		winner = 1;
 	}
 }*/
-	//curFightInfoPtr = make_unique<GameFightInfo>(pos, p1, p2, winner);
+	//curFightInfoPtr = make_unique<GameFightInfo>(pos, p1, p2, 56);
 	if (shouldUpdateFightsVector)
-		fightsVecToFill.push_back(make_unique<GameFightInfo>(pos, p1, p2, winner));
-	if (winner == 1)
+		fightsVecToFill.push_back(make_unique<GameFightInfo>(pos, p1, p2, fightWinner));
+	if (fightWinner == 1)
 		this->gBoard->setGamePieceOnBoard(p1InitialBoard->getGamePiece(pos), 1);
-	else if (winner == 2)
+	else if (fightWinner == 2)
 		this->gBoard->setGamePieceOnBoard(p2InitialBoard->getGamePiece(pos), 2);
 }
 
@@ -460,7 +462,11 @@ void GameManager::playGame() {
 			}
 			this->gBoard->setGamePieceOnBoard(GamePiece('J', curJokerChange->getJokerChangePosition().getX(), curJokerChange->getJokerChangePosition().getY(), curJokerChange->getJokerNewRep(), curPlayer), curPlayer);
 		}
-		
+		if (turnsWithoutFight >= 90) {
+			this->createOutputFile();
+		}
+		if (this->winner != 0)
+			int b = 3;
 	
 		curPlayer = this->getOtherPlayer(curPlayer);
 	}
@@ -481,8 +487,8 @@ void GameManager::createOutputFile() {
 		fout << "Reason: " << this->reason << endl;
 		fout << endl;
 
-		for (col = 1; col < M; col++) {
-			for (row = 1; row < N; row++) {
+		for (row = 1; row < N; row++) {
+			for (col = 1; col < M; col++) {
 				if (this->gBoard->getPlayer(MyPoint(col,row))!=0) {
 					if (this->gBoard->getPlayer(MyPoint(col, row)) == 1)
 						curLetter = this->gBoard->getGamePiece(MyPoint(col,row)).getPiece();

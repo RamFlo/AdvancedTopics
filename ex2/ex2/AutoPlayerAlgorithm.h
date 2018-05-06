@@ -13,7 +13,7 @@
 #include "GameBoard.h"
 #include "GameMove.h"
 #include <map>
-#include <random>
+#include <cstdlib>
 #include <ctime>
 using namespace std;
 //--------------------------
