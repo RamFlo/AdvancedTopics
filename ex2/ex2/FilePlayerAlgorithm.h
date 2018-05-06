@@ -18,6 +18,7 @@ class FilePlayerAlgorithm:public PlayerAlgorithm {
 	vector<unique_ptr<Move>> movesVector;
 	vector<unique_ptr<JokerChange>> jokerChangeVector;
 	void fillMovesAndJokerVectors(int player);
+	int curMoveNum;
 public:
 	FilePlayerAlgorithm(int player);
 	void getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill) override;

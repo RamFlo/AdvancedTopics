@@ -16,6 +16,8 @@
 #define NUM_OF_B 2 
 #define NUM_OF_J 2 
 #define NUM_OF_F 1 
+#define UNKNOWN_PIECE 'U'
+#define MAX_TURNS_WITHOUT_FIGHT 100
 //#define FAILURE_CHAR 'T'
 //--------------------------
 #endif

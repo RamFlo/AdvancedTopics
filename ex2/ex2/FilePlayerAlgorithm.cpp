@@ -24,11 +24,17 @@ void FilePlayerAlgorithm::notifyFightResult(const FightInfo & fightInfo) {} //Em
 
 unique_ptr<Move> FilePlayerAlgorithm::getMove()
 {
-	//unique_ptr<FilePlayerParser> moveParser = make_unique<FilePlayerParser>();
-	return unique_ptr<Move>();
+	if (curMoveNum < this->movesVector.size())
+		return make_unique<GameMove>(this->movesVector[curMoveNum]->getFrom().getX(), this->movesVector[curMoveNum]->getFrom().getY(), this->movesVector[curMoveNum]->getTo().getX(), this->movesVector[curMoveNum]->getTo().getY());
+	return make_unique<GameMove>(-1,-1,-1,-1);
 }
 
 unique_ptr<JokerChange> FilePlayerAlgorithm::getJokerChange()
 {
-	return unique_ptr<JokerChange>();
+	int curJokerChangeNum = curMoveNum;
+	this->curMoveNum++;
+	if (curJokerChangeNum < this->jokerChangeVector.size() && this->jokerChangeVector[curJokerChangeNum]!=nullptr)
+		return make_unique<GameJokerChange>(this->jokerChangeVector[curJokerChangeNum]->getJokerChangePosition().getX(), this->jokerChangeVector[curJokerChangeNum]->getJokerChangePosition().getY(), this->jokerChangeVector[curJokerChangeNum]->getJokerNewRep());
+	return nullptr;
+	
 }

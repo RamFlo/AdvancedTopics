@@ -1,6 +1,6 @@
 #include "GameFightInfo.h"
 
-GameFightInfo::GameFightInfo(Point & fPos, char p1P, char p2P, int winner) :p1Piece(p1P),p2Piece(p2P),fightWinner(winner)
+GameFightInfo::GameFightInfo(const Point & fPos, char p1P, char p2P, int winner) :p1Piece(p1P),p2Piece(p2P),fightWinner(winner)
 {
 	this->fightPos = make_unique<MyPoint>(fPos.getX(), fPos.getY());
 }

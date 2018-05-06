@@ -17,6 +17,8 @@ public:
 	MyPoint(int newX, int newY);
 	int getX() const override;
 	int getY() const override;
+	void setX(int newX);
+	void setY(int newY);
 	~MyPoint() {}
 };
 

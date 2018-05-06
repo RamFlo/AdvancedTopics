@@ -22,7 +22,7 @@ public:
 	GameBoard();
 	GamePiece & getGamePiece(const Point & pos) const;
 	int getPlayer(const Point& pos) const override; // 1 for player 1’s piece, 2 for 2, 0 if empty
-	void setGamePieceOnBoard(PiecePosition & piece, int player);
+	void setGamePieceOnBoard(const PiecePosition & piece, int player);
 	~GameBoard() {}
 };
 

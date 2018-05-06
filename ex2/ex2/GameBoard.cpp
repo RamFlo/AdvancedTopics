@@ -19,7 +19,7 @@ int GameBoard::getPlayer(const Point & pos) const
 }
 
 //is the old pointer deleted after the assignment?
-void GameBoard::setGamePieceOnBoard(PiecePosition & piece,int player)
+void GameBoard::setGamePieceOnBoard(const PiecePosition & piece,int player)
 {
 	this->finalBoard[piece.getPosition().getY() - 1][piece.getPosition().getX() - 1] = make_unique<GamePiece>(piece.getPiece(), piece.getPosition().getX(), piece.getPosition().getY(),piece.getJokerRep(),player);
 }

@@ -11,3 +11,13 @@ int MyPoint::getY() const
 {
 	return this->y;
 }
+
+void MyPoint::setX(int newX)
+{
+	this->x = newX;
+}
+
+void MyPoint::setY(int newY)
+{
+	this->y = newY;
+}

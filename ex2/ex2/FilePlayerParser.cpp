@@ -87,6 +87,10 @@ void parseStringIntoVector(vector<string>* myVec, string str) {
 		myVec->push_back(buf);
 }
 
+/*bool isLegalJokerChangeCommandInVec(vector<string>* myVec, int curLineNum, int player) {
+	vector<string> myCommandVec = *myVec;
+}*/
+
 bool isLegalMoveCommandVec(vector<string>* myVec, int curLineNum, int player) {
 	vector<string> myCommandVec = *myVec;
 	if (myCommandVec.size() != 4 && myCommandVec.size() != 8) {
