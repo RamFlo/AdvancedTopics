@@ -1,4 +1,7 @@
 #include "AutoPlayerAlgorithm.h"
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 AutoPlayerAlgorithm::AutoPlayerAlgorithm(int player)
 {
@@ -67,7 +70,7 @@ void AutoPlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr
 	int curPiecePosX, curPiecePosY;
 	char pieceToPosition, curTypeIfJoker = 'B';
 	//bool isFirstFlagPositioning = true;
-	srand(time(NULL)+this->player);
+	//srand(time(NULL)+this->player);
 	while ((pieceToPosition = checkPiecesPositioned())!='#') {
 		curPiecePosX = rand() % M + 1;
 		curPiecePosY = rand() % N + 1;
@@ -80,7 +83,7 @@ void AutoPlayerAlgorithm::getInitialPositions(int player, std::vector<unique_ptr
 		}
 		else {
 			vectorToFill.push_back(make_unique<GamePiece>(pieceToPosition, curPiecePosX, curPiecePosY, '#', player));
-			this->knowBoard->setGamePieceOnBoard(GamePiece(pieceToPosition, curPiecePosX, curPiecePosY, curTypeIfJoker, player), player);
+			this->knowBoard->setGamePieceOnBoard(GamePiece(pieceToPosition, curPiecePosX, curPiecePosY, '#', player), player);
 		}
 		this->updateMyPieceCount(pieceToPosition, 1);
 	}
@@ -101,8 +104,8 @@ void AutoPlayerAlgorithm::notifyOnInitialBoard(const Board & b, const std::vecto
 		}
 	}
 	//update knowBoard according to given board
-	for (col = 1; col < M; col++) {
-		for (row = 1; row < N; row++) {
+	for (col = 1; col <= M; col++) {
+		for (row = 1; row <= N; row++) {
 			if (isAutoPlayerSquareEmpty(MyPoint(col, row)) && b.getPlayer(MyPoint(col, row)) != 0)
 				this->knowBoard->setGamePieceOnBoard(GamePiece(UNKNOWN_PIECE, col, row, '#', b.getPlayer(MyPoint(col, row))), b.getPlayer(MyPoint(col, row)));
 		}
@@ -113,31 +116,30 @@ void AutoPlayerAlgorithm::notifyOnOpponentMove(const Move & move)
 {
 	char opponentPiece;
 	int srcCol, srcRow, dstCol, dstRow,opponentNum;
+	srcCol = move.getFrom().getX();
+	srcRow = move.getFrom().getY();
+	opponentNum = this->knowBoard->getPlayer(move.getFrom());
+	opponentPiece = this->knowBoard->getGamePiece(move.getFrom()).getPiece();
+	this->knowBoard->setGamePieceOnBoard(GamePiece('\0', srcCol, srcRow, '\0', 0), 0);
 	if (isAutoPlayerSquareEmpty(move.getTo())) {
-		opponentPiece = this->knowBoard->getGamePiece(move.getFrom()).getPiece();
-		srcCol = move.getFrom().getX();
-		srcRow = move.getFrom().getY();
 		dstCol = move.getTo().getX();
 		dstRow = move.getTo().getY();
-		opponentNum = this->knowBoard->getPlayer(move.getFrom());
 		this->knowBoard->setGamePieceOnBoard(GamePiece(opponentPiece, dstCol, dstRow, '#', opponentNum), opponentNum);
-		this->knowBoard->setGamePieceOnBoard(GamePiece('\0', srcCol, srcRow, '\0', 0), 0);
 	}
 }
 
 void AutoPlayerAlgorithm::notifyFightResult(const FightInfo & fightInfo)
 {
-	int srcCol = fightInfo.getPosition().getX();
-	int srcRow = fightInfo.getPosition().getY();
-	if (fightInfo.getWinner() != this->player) {
-		if (fightInfo.getWinner() == 0) {
-			this->knowBoard->setGamePieceOnBoard(GamePiece('\0', srcCol, srcRow, '\0', 0), 0);
+	int fightCol = fightInfo.getPosition().getX();
+	int fightRow = fightInfo.getPosition().getY();
+	if (fightInfo.getWinner() == 0) {
+		this->knowBoard->setGamePieceOnBoard(GamePiece('\0', fightCol, fightRow, '\0', 0), 0);
+		this->updateMyPieceCount(fightInfo.getPiece(this->player), -1);
+	}
+	else {
+		this->knowBoard->setGamePieceOnBoard(GamePiece(fightInfo.getPiece(fightInfo.getWinner()), fightCol, fightRow, '#', fightInfo.getWinner()), fightInfo.getWinner());
+		if (fightInfo.getWinner() != this->player)
 			this->updateMyPieceCount(fightInfo.getPiece(this->player), -1);
-		}
-		else {
-			this->knowBoard->setGamePieceOnBoard(GamePiece(fightInfo.getPiece(fightInfo.getWinner()), srcCol, srcRow, '#', fightInfo.getWinner()), 0);
-			this->updateMyPieceCount(fightInfo.getPiece(this->player), -1);
-		}	
 	}
 }
 
@@ -219,8 +221,9 @@ bool AutoPlayerAlgorithm::isMoveablePiece(const Point & myPiecePosition) {
 }
 
 void AutoPlayerAlgorithm::findLegalMove(const Point & myPiecePosition, MyPoint& pointToFill) {
-	int col = myPiecePosition.getX(), row = myPiecePosition.getY();
+	int col = myPiecePosition.getX(), row = myPiecePosition.getY(), moveDirectionRand=0;
 	char myPiece = this->knowBoard->getGamePiece(myPiecePosition).getPiece(), opponentPiece;
+	moveDirectionRand = rand() % 4;
 	if (col + 1 <= M && this->knowBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer() != this->player) {
 		pointToFill.setX(col + 1);
 		pointToFill.setY(row);
@@ -241,6 +244,31 @@ void AutoPlayerAlgorithm::findLegalMove(const Point & myPiecePosition, MyPoint& 
 		pointToFill.setY(row - 1);
 		return;
 	}
+}
+
+
+void AutoPlayerAlgorithm::createOutputFilePlayer() {
+	char curLetter = '\0';
+	ofstream fout;
+	int col, row;
+	fout.open("rps.output_player");
+	if (fout.fail())
+		cout << "Could not create output file" << endl;
+	for (row = 1; row <= N; row++) {
+		for (col = 1; col <= M; col++) {
+			if (this->knowBoard->getPlayer(MyPoint(col, row)) != 0) {
+				if (this->knowBoard->getPlayer(MyPoint(col, row)) == 1)
+					curLetter = this->knowBoard->getGamePiece(MyPoint(col, row)).getPiece();
+				else
+					curLetter = tolower(this->knowBoard->getGamePiece(MyPoint(col, row)).getPiece());
+				fout << curLetter;
+			}
+			else
+				fout << " ";
+		}
+		fout << endl;
+	}
+	fout.close();
 }
 
 unique_ptr<Move> AutoPlayerAlgorithm::getMove()
@@ -265,10 +293,13 @@ unique_ptr<Move> AutoPlayerAlgorithm::getMove()
 			}
 		}
 	}
-	srand(time(NULL) + 2*this->player);
-	randIndexInPosVector = rand() % myPiecesPositions.size();
+	//srand(time(NULL) + 2*this->player);
+	//randIndexInPosVector = rand() % myPiecesPositions.size();
+	//printf("player: %d, number of pieces to choose from: %d, index chosen: %d\n", this->player, (int)myPiecesPositions.size(), randIndexInPosVector);
+	//this->createOutputFilePlayer();
 	while (pointToMoveTo.getX() == -1) {
 		randIndexInPosVector = rand() % myPiecesPositions.size();
+		printf("player: %d, number of pieces to choose from: %d, index chosen: %d\n", this->player, (int)myPiecesPositions.size(), randIndexInPosVector);
 		findLegalMove(myPiecesPositions[randIndexInPosVector], pointToMoveTo);
 	}
 	movingPieceType = this->knowBoard->getGamePiece(myPiecesPositions[randIndexInPosVector]).getPiece();

@@ -28,6 +28,7 @@ class AutoPlayerAlgorithm :public PlayerAlgorithm {
 	void findNearbyBeatablePiece(const Point & myPiecePosition, MyPoint& pointToFill);
 	bool isMoveablePiece(const Point & myPiecePosition);
 	void findLegalMove(const Point & myPiecePosition, MyPoint & pointToFill);
+	void createOutputFilePlayer();
 public:
 	AutoPlayerAlgorithm(int player);
 	void getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill) override;

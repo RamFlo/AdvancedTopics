@@ -132,7 +132,7 @@ bool GameManager::isEnoughFlags(int player) {
 
 bool GameManager::initializeBoardFromPositionsVector(vector<unique_ptr<PiecePosition>>& playerPositions, int player) {
 	int i = 0;
-	for (i = 0; i < playerPositions.size(); i++) {
+	for (i = 0; i < (int)playerPositions.size(); i++) {
 		if (!this->handlePositioningLine(*(playerPositions[i]), player))
 			return false;
 	}
@@ -328,7 +328,7 @@ bool GameManager::initializeGameBoard()
 
 bool GameManager::isThereLegalMove(const Point & myPiecePosition) {
 	int col = myPiecePosition.getX(), row = myPiecePosition.getY();
-	char myPiece = this->gBoard->getGamePiece(myPiecePosition).getPiece(), opponentPiece;
+	char myPiece = this->gBoard->getGamePiece(myPiecePosition).getPiece();
 	if (col + 1 <= M && this->gBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
 		return true;
 	if (col - 1 >= 1 && this->gBoard->getGamePiece(MyPoint(col - 1, row)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
@@ -344,7 +344,7 @@ bool GameManager::playerHasLegalMove(int player) {
 	int col, row;
 	for (col = 1; col <= M; col++) {
 		for (row = 1; row <= N; row++) {
-			if (this->gBoard->getPlayer(MyPoint(col, row)) && isThereLegalMove(MyPoint(col, row)))
+			if (this->gBoard->getPlayer(MyPoint(col, row)) == player && isThereLegalMove(MyPoint(col, row)))
 				return true;
 		}
 	}
@@ -405,6 +405,7 @@ void GameManager::playGame() {
 	char movingPieceType, movingPieceCurType, curPlayerPiece,opponentPiece;
 	unique_ptr<Move> curMove;
 	unique_ptr<JokerChange> curJokerChange;
+	//this->createOutputFile();
 	while (turnsWithoutFight < MAX_TURNS_WITHOUT_FIGHT) {
 		turnsWithoutFight++;
 		if (!playerHasLegalMove(curPlayer)) {
@@ -416,18 +417,19 @@ void GameManager::playGame() {
 			curMove = this->player1Algorithm->getMove();
 		else
 			curMove = this->player2Algorithm->getMove();
+		//printf("Print A: player %d: move %c from: <%d, %d> to: <%d, %d>\n", curPlayer, this->gBoard->getGamePiece(curMove->getFrom()).getPiece(), curMove->getFrom().getX(), curMove->getFrom().getY(), curMove->getTo().getX(), curMove->getTo().getY());
 		if (!isLegalMove(curPlayer, curMove->getFrom(), curMove->getTo())) {
 			this->reason = "Bad Moves input for player " + to_string(curPlayer);
 			this->winner = this->getOtherPlayer(curPlayer);
 			return;
 		}
-		printf("player %d: move from: <%d, %d> to: <%d, %d>\n", curPlayer, curMove->getFrom().getX(), curMove->getFrom().getY(), curMove->getTo().getX(), curMove->getTo().getY());
 		if (curPlayer == 1)
 			this->player2Algorithm->notifyOnOpponentMove(*(curMove));
 		else
 			this->player1Algorithm->notifyOnOpponentMove(*(curMove));
 		movingPieceType = this->gBoard->getGamePiece(curMove->getFrom()).getPiece();
 		movingPieceCurType = this->gBoard->getGamePiece(curMove->getFrom()).getJokerRep();
+		//printf("Print B: player %d: move %c from: <%d, %d> to: <%d, %d>\n\n", curPlayer, movingPieceType, curMove->getFrom().getX(), curMove->getFrom().getY(), curMove->getTo().getX(), curMove->getTo().getY());
 		if (this->gBoard->getPlayer(curMove->getTo()) == 0)
 			this->gBoard->setGamePieceOnBoard(GamePiece(movingPieceType, curMove->getTo().getX(), curMove->getTo().getY(), movingPieceCurType, curPlayer), curPlayer);
 		else {//handle fight
@@ -444,6 +446,8 @@ void GameManager::playGame() {
 			this->player2Algorithm->notifyFightResult(curFightInfo);
 			if (curFightWinner == curPlayer)
 				this->gBoard->setGamePieceOnBoard(GamePiece(movingPieceType, curMove->getTo().getX(), curMove->getTo().getY(), movingPieceCurType, curPlayer), curPlayer);
+			else if (curFightWinner == 0)
+				this->gBoard->setGamePieceOnBoard(GamePiece('\0', curMove->getTo().getX(), curMove->getTo().getY(), '\0', 0), 0); //if both pieces tied, empty destination square
 		}
 		this->gBoard->setGamePieceOnBoard(GamePiece('\0', curMove->getFrom().getX(), curMove->getFrom().getY(), '\0', 0), 0); //empty source point of move
 		if (checkIfPlayerHasNoFlags(this->getOtherPlayer(curPlayer))) {
@@ -463,11 +467,12 @@ void GameManager::playGame() {
 			}
 			this->gBoard->setGamePieceOnBoard(GamePiece('J', curJokerChange->getJokerChangePosition().getX(), curJokerChange->getJokerChangePosition().getY(), curJokerChange->getJokerNewRep(), curPlayer), curPlayer);
 		}
-		if (turnsWithoutFight >= 90) {
+		/*if (turnsWithoutFight >= 90) {
 			this->createOutputFile();
-		}
-		if (this->winner != 0)
-			int b = 3;
+		}*/
+		//this->createOutputFile();
+		//if (this->winner != 0)
+		//	int b = 3;
 	
 		curPlayer = this->getOtherPlayer(curPlayer);
 	}
@@ -488,8 +493,8 @@ void GameManager::createOutputFile() {
 		fout << "Reason: " << this->reason << endl;
 		fout << endl;
 
-		for (row = 1; row < N; row++) {
-			for (col = 1; col < M; col++) {
+		for (row = 1; row <= N; row++) {
+			for (col = 1; col <= M; col++) {
 				if (this->gBoard->getPlayer(MyPoint(col,row))!=0) {
 					if (this->gBoard->getPlayer(MyPoint(col, row)) == 1)
 						curLetter = this->gBoard->getGamePiece(MyPoint(col,row)).getPiece();

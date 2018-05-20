@@ -9,7 +9,7 @@ GameBoard::GameBoard()
 {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++)
-			this->finalBoard[i][j] = make_unique<GamePiece>('\0', 0, 0, '\0', 0);
+			this->finalBoard[i][j] = make_unique<GamePiece>('\0', j+1, i+1, '\0', 0);
 	}
 }
 
