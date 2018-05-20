@@ -141,6 +141,10 @@ void AutoPlayerAlgorithm::notifyFightResult(const FightInfo & fightInfo)
 		if (fightInfo.getWinner() != this->player)
 			this->updateMyPieceCount(fightInfo.getPiece(this->player), -1);
 	}
+	//if (this->myPieceCount["myFlags"] == 0)
+	//	printf("bla");
+	/*if (fightInfo.getPiece(fightInfo.getWinner()) =='F')
+		printf("bla");*/
 }
 
 bool AutoPlayerAlgorithm::doesPiece1BeatPiece2(char p1, char p2) {
@@ -310,7 +314,7 @@ unique_ptr<Move> AutoPlayerAlgorithm::getMove()
 	//this->createOutputFilePlayer();
 	while (pointToMoveTo.getX() == -1) {
 		randIndexInPosVector = rand() % myPiecesPositions.size();
-		printf("player: %d, number of pieces to choose from: %d, index chosen: %d\n", this->player, (int)myPiecesPositions.size(), randIndexInPosVector);
+		//printf("player: %d, number of pieces to choose from: %d, index chosen: %d\n", this->player, (int)myPiecesPositions.size(), randIndexInPosVector);
 		findLegalMove(myPiecesPositions[randIndexInPosVector], pointToMoveTo);
 	}
 	movingPieceType = this->knowBoard->getGamePiece(myPiecesPositions[randIndexInPosVector]).getPiece();

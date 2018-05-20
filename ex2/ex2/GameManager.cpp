@@ -329,6 +329,8 @@ bool GameManager::initializeGameBoard()
 bool GameManager::isThereLegalMove(const Point & myPiecePosition) {
 	int col = myPiecePosition.getX(), row = myPiecePosition.getY();
 	char myPiece = this->gBoard->getGamePiece(myPiecePosition).getPiece();
+	if (!isMovingPiece(this->gBoard->getGamePiece(myPiecePosition)))
+		return false;
 	if (col + 1 <= M && this->gBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
 		return true;
 	if (col - 1 >= 1 && this->gBoard->getGamePiece(MyPoint(col - 1, row)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
@@ -401,7 +403,7 @@ bool GameManager::isLegalJokerChange(const JokerChange & curJokerChange, int pla
 }
 
 void GameManager::playGame() {
-	int turnsWithoutFight = 0, curPlayer = 1;
+	int turnsWithoutFight = 0, curPlayer = 1, curFightWinner;
 	char movingPieceType, movingPieceCurType, curPlayerPiece,opponentPiece;
 	unique_ptr<Move> curMove;
 	unique_ptr<JokerChange> curJokerChange;
@@ -440,10 +442,20 @@ void GameManager::playGame() {
 				curPlayerPiece = movingPieceCurType;
 			if (opponentPiece == 'J')
 				opponentPiece = this->gBoard->getGamePiece(curMove->getTo()).getJokerRep();
-			int curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(curPlayerPiece, opponentPiece, movingPieceType, this->gBoard->getGamePiece(curMove->getTo()).getPiece());
-			GameFightInfo curFightInfo(curMove->getTo(), curPlayerPiece, opponentPiece, curFightWinner);
-			this->player1Algorithm->notifyFightResult(curFightInfo);
-			this->player2Algorithm->notifyFightResult(curFightInfo);
+			if (curPlayer==1)
+				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(curPlayerPiece, opponentPiece, movingPieceType, this->gBoard->getGamePiece(curMove->getTo()).getPiece());
+			else
+				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(opponentPiece, curPlayerPiece, movingPieceType, this->gBoard->getGamePiece(curMove->getTo()).getPiece());
+			if (curPlayer == 1) {
+				GameFightInfo curFightInfo(curMove->getTo(), curPlayerPiece, opponentPiece, curFightWinner);
+				this->player1Algorithm->notifyFightResult(curFightInfo);
+				this->player2Algorithm->notifyFightResult(curFightInfo);
+			}	
+			else {
+				GameFightInfo curFightInfo(curMove->getTo(), opponentPiece, curPlayerPiece, curFightWinner);
+				this->player1Algorithm->notifyFightResult(curFightInfo);
+				this->player2Algorithm->notifyFightResult(curFightInfo);
+			}
 			if (curFightWinner == curPlayer)
 				this->gBoard->setGamePieceOnBoard(GamePiece(movingPieceType, curMove->getTo().getX(), curMove->getTo().getY(), movingPieceCurType, curPlayer), curPlayer);
 			else if (curFightWinner == 0)
