@@ -221,29 +221,40 @@ bool AutoPlayerAlgorithm::isMoveablePiece(const Point & myPiecePosition) {
 }
 
 void AutoPlayerAlgorithm::findLegalMove(const Point & myPiecePosition, MyPoint& pointToFill) {
-	int col = myPiecePosition.getX(), row = myPiecePosition.getY(), moveDirectionRand=0;
+	int col = myPiecePosition.getX(), row = myPiecePosition.getY(), i, randDirectionNum;
 	char myPiece = this->knowBoard->getGamePiece(myPiecePosition).getPiece(), opponentPiece;
-	moveDirectionRand = rand() % 4;
-	if (col + 1 <= M && this->knowBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer() != this->player) {
-		pointToFill.setX(col + 1);
-		pointToFill.setY(row);
-		return;
+	vector<int> myPossibleDirectionsVec;
+	bool isNumInVector[4] = { false,false,false,false };
+	while (myPossibleDirectionsVec.size() < 4) {
+		randDirectionNum = rand() % 4;
+		if (!isNumInVector[randDirectionNum]) {
+			myPossibleDirectionsVec.push_back(randDirectionNum);
+			isNumInVector[randDirectionNum] = true;
+		}
 	}
-	if (col - 1 >= 1 && this->knowBoard->getGamePiece(MyPoint(col - 1, row)).getPlayer() != this->player) {
-		pointToFill.setX(col - 1);
-		pointToFill.setY(row);
-		return;
+	for (i = 0; i < 4; i++) {
+		if (myPossibleDirectionsVec[i] == 0 && col + 1 <= M && this->knowBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer() != this->player) {
+			pointToFill.setX(col + 1);
+			pointToFill.setY(row);
+			return;
+		}
+		if (myPossibleDirectionsVec[i] == 1 && col - 1 >= 1 && this->knowBoard->getGamePiece(MyPoint(col - 1, row)).getPlayer() != this->player) {
+			pointToFill.setX(col - 1);
+			pointToFill.setY(row);
+			return;
+		}
+		if (myPossibleDirectionsVec[i] == 2 && row + 1 <= N && this->knowBoard->getGamePiece(MyPoint(col, row + 1)).getPlayer() != this->player) {
+			pointToFill.setX(col);
+			pointToFill.setY(row + 1);
+			return;
+		}
+		if (myPossibleDirectionsVec[i] == 3 && row - 1 >= 1 && this->knowBoard->getGamePiece(MyPoint(col, row - 1)).getPlayer() != this->player) {
+			pointToFill.setX(col);
+			pointToFill.setY(row - 1);
+			return;
+		}
 	}
-	if (row + 1 <= N && this->knowBoard->getGamePiece(MyPoint(col, row + 1)).getPlayer() != this->player) {
-		pointToFill.setX(col);
-		pointToFill.setY(row + 1);
-		return;
-	}
-	if (row - 1 >= 1 && this->knowBoard->getGamePiece(MyPoint(col, row - 1)).getPlayer() != this->player) {
-		pointToFill.setX(col);
-		pointToFill.setY(row - 1);
-		return;
-	}
+	
 }
 
 

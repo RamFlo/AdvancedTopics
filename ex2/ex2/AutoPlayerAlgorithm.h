@@ -15,6 +15,8 @@
 #include <map>
 #include <cstdlib>
 #include <ctime>
+#include <algorithm>
+#include <random>
 using namespace std;
 //--------------------------
 
