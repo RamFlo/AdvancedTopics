@@ -444,7 +444,7 @@ void GameManager::playGame() {
 			if (opponentPiece == 'J')
 				opponentPiece = this->gBoard->getGamePiece(curMove->getTo()).getJokerRep();
 			if (curPlayer == 1) {
-				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(curPlayerPiece, opponentPiece, this->gBoard->getGamePiece(curMove->getTo()).getPiece(), movingPieceType);
+				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(curPlayerPiece, opponentPiece, movingPieceType, this->gBoard->getGamePiece(curMove->getTo()).getPiece());
 				//curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(curPlayerPiece, opponentPiece, movingPieceType, this->gBoard->getGamePiece(curMove->getTo()).getPiece());
 			}
 				
