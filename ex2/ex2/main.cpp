@@ -2,7 +2,7 @@
 
 int main() {
 	int i = 0;
-	GameManager gm("auto-vs-auto");
+	GameManager gm("file-vs-file");
 	srand(time(NULL));
 	if (!gm.initializeGameBoard()) {
 		gm.createOutputFile();

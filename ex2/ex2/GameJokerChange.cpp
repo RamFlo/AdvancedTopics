@@ -13,5 +13,5 @@ const Point & GameJokerChange::getJokerChangePosition() const
 
 char GameJokerChange::getJokerNewRep() const
 {
-	return this->getJokerNewRep();
+	return this->jokerNewRep;
 }

@@ -403,12 +403,13 @@ bool GameManager::isLegalJokerChange(const JokerChange & curJokerChange, int pla
 }
 
 void GameManager::playGame() {
-	int turnsWithoutFight = 0, curPlayer = 1, curFightWinner;
+	int turnsWithoutFight = 0, curPlayer = 1, curFightWinner, moveNum = 0;
 	char movingPieceType, movingPieceCurType, curPlayerPiece,opponentPiece;
 	unique_ptr<Move> curMove;
 	unique_ptr<JokerChange> curJokerChange;
 	//this->createOutputFile();
 	while (turnsWithoutFight < MAX_TURNS_WITHOUT_FIGHT) {
+		moveNum++;
 		turnsWithoutFight++;
 		if (!playerHasLegalMove(curPlayer)) {
 			this->reason = "All moving PIECEs of the opponent are eaten";
@@ -442,10 +443,15 @@ void GameManager::playGame() {
 				curPlayerPiece = movingPieceCurType;
 			if (opponentPiece == 'J')
 				opponentPiece = this->gBoard->getGamePiece(curMove->getTo()).getJokerRep();
-			if (curPlayer==1)
-				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(curPlayerPiece, opponentPiece, movingPieceType, this->gBoard->getGamePiece(curMove->getTo()).getPiece());
-			else
-				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(opponentPiece, curPlayerPiece, movingPieceType, this->gBoard->getGamePiece(curMove->getTo()).getPiece());
+			if (curPlayer == 1) {
+				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(curPlayerPiece, opponentPiece, this->gBoard->getGamePiece(curMove->getTo()).getPiece(), movingPieceType);
+				//curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(curPlayerPiece, opponentPiece, movingPieceType, this->gBoard->getGamePiece(curMove->getTo()).getPiece());
+			}
+				
+			else {
+				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(opponentPiece, curPlayerPiece, this->gBoard->getGamePiece(curMove->getTo()).getPiece(), movingPieceType);
+				//curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(opponentPiece, curPlayerPiece, movingPieceType, this->gBoard->getGamePiece(curMove->getTo()).getPiece());
+			}
 			if (curPlayer == 1) {
 				GameFightInfo curFightInfo(curMove->getTo(), curPlayerPiece, opponentPiece, curFightWinner);
 				this->player1Algorithm->notifyFightResult(curFightInfo);
