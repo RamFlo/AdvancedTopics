@@ -421,6 +421,7 @@ void GameManager::playGame() {
 			this->winner = this->getOtherPlayer(curPlayer);
 			return;
 		}
+		printf("player %d: move from: <%d, %d> to: <%d, %d>\n", curPlayer, curMove->getFrom().getX(), curMove->getFrom().getY(), curMove->getTo().getX(), curMove->getTo().getY());
 		if (curPlayer == 1)
 			this->player2Algorithm->notifyOnOpponentMove(*(curMove));
 		else

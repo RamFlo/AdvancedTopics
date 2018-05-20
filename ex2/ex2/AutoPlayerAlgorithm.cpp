@@ -176,7 +176,7 @@ void AutoPlayerAlgorithm::findNearbyBeatablePiece(const Point & myPiecePosition,
 	if (col + 1 <= M) {
 		opponentPiece = this->knowBoard->getGamePiece(MyPoint(col + 1, row)).getPiece();
 		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer();
-		if (dstPointPlayerNum != this->player && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
+		if (dstPointPlayerNum != this->player && opponentPiece!='\0' && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
 			pointToFill.setX(col + 1);
 			pointToFill.setY(row);
 			return;
@@ -185,7 +185,7 @@ void AutoPlayerAlgorithm::findNearbyBeatablePiece(const Point & myPiecePosition,
 	if (col - 1 >= 1) {
 		opponentPiece = this->knowBoard->getGamePiece(MyPoint(col - 1, row)).getPiece();
 		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col - 1, row)).getPlayer();
-		if (dstPointPlayerNum != this->player && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
+		if (dstPointPlayerNum != this->player && opponentPiece != '\0' && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
 			pointToFill.setX(col - 1);
 			pointToFill.setY(row);
 			return;
@@ -194,7 +194,7 @@ void AutoPlayerAlgorithm::findNearbyBeatablePiece(const Point & myPiecePosition,
 	if (row + 1 <= N) {
 		opponentPiece = this->knowBoard->getGamePiece(MyPoint(col, row+1)).getPiece();
 		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col, row+1)).getPlayer();
-		if (dstPointPlayerNum != this->player && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
+		if (dstPointPlayerNum != this->player && opponentPiece != '\0' && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
 			pointToFill.setX(col);
 			pointToFill.setY(row+1);
 			return;
@@ -203,7 +203,7 @@ void AutoPlayerAlgorithm::findNearbyBeatablePiece(const Point & myPiecePosition,
 	if (row - 1 >= 1) {
 		opponentPiece = this->knowBoard->getGamePiece(MyPoint(col, row-1)).getPiece();
 		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col , row-1)).getPlayer();
-		if (dstPointPlayerNum != this->player && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
+		if (dstPointPlayerNum != this->player && opponentPiece != '\0' && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
 			pointToFill.setX(col);
 			pointToFill.setY(row-1);
 			return;
