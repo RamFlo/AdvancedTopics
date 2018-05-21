@@ -4,8 +4,8 @@
 //--------------------------
 // MyPoint Class
 //--------------------------
-// abstract class Point should be the base class for your "Point" implementation
-// @author Amir Kirsh, TAU - Advanced Topics in Programming - 2018 Semester B
+
+// @authors Guy Keller, Ram Shimon TAU - Advanced Topics in Programming - 2018 Semester B
 
 //--------------------------
 #include "Point.h"
