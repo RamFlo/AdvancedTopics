@@ -18,6 +18,12 @@
 #include "GameFightInfo.h"
 
 //--------------------------
+// GameManager class
+//--------------------------
+
+// @authors Guy Keller, Ram Shimon TAU - Advanced Topics in Programming - 2018 Semester B
+
+//--------------------------
 #include <map>
 #include <string>
 using namespace std;

@@ -13,12 +13,15 @@ GameBoard::GameBoard()
 	}
 }
 
+/*
+returns the player residing at position pos on the board.
+*/
 int GameBoard::getPlayer(const Point & pos) const
 {
 	return this->getGamePiece(pos).getPlayer();
 }
 
-//is the old pointer deleted after the assignment?
+//sets a piece on board accoring to the given piece
 void GameBoard::setGamePieceOnBoard(const PiecePosition & piece,int player)
 {
 	this->finalBoard[piece.getPosition().getY() - 1][piece.getPosition().getX() - 1] = make_unique<GamePiece>(piece.getPiece(), piece.getPosition().getX(), piece.getPosition().getY(),piece.getJokerRep(),player);

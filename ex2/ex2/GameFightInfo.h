@@ -5,7 +5,7 @@
 // GameFightInfo Class
 //--------------------------
 
-// @author Amir Kirsh, TAU - Advanced Topics in Programming - 2018 Semester B
+// @authors Guy Keller, Ram Shimon TAU - Advanced Topics in Programming - 2018 Semester B
 
 //--------------------------
 #include "FightInfo.h"
@@ -19,8 +19,6 @@ class GameFightInfo:public FightInfo {
 	char p1Piece, p2Piece;
 	unique_ptr<Point> fightPos;
 public:
-	/*GameFightInfo(const GameFightInfo&) = delete;
-	GameFightInfo& operator=(const GameFightInfo&) = delete;*/
 	GameFightInfo(const Point & fPos,char p1P,char p2P,int winner);
 	const Point& getPosition() const override;
 	char getPiece(int player) const override; // R, P, S, B or F (but NOT J)

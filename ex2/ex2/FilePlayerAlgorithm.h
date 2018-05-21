@@ -11,6 +11,8 @@
 #include "PlayerAlgorithm.h"
 #include "FilePlayerParser.h"
 
+#define UNUSED(expr) (void)(expr)
+
 using namespace std;
 //--------------------------
 
