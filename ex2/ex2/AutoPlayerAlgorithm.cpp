@@ -183,7 +183,7 @@ bool AutoPlayerAlgorithm::doesPiece1BeatPiece2(char p1, char p2) {
 		return false;
 	else if (p2 == 'R')
 		return true;
-	return true;
+	return false;
 }
 
 
