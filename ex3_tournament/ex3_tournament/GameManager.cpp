@@ -90,6 +90,10 @@ bool GameManager::updatePieceCount(int player, char curPiece, int incOrDec) {
 	return false;
 }
 
+int GameManager::getWinner() {
+	return this->winner;
+}
+
 /*
 this function returns whether or not a square is empty on the player's initial board.
 */

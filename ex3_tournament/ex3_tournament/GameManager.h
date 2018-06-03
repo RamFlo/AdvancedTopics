@@ -52,6 +52,7 @@ public:
 	GameManager(unique_ptr<PlayerAlgorithm> p1, unique_ptr<PlayerAlgorithm> p2);
 	bool initializeGameBoard();
 	void playGame();
+	int getWinner();
 	//void createOutputFile();
 	~GameManager() {}
 };
