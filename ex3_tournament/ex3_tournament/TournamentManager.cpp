@@ -1,5 +1,7 @@
 #include "TournamentManager.h"
 #include "AlgorithmRegistration.h"
+#include <algorithm>
+#include <iostream>
 
 TournamentManager & TournamentManager::getTournamentManager()
 {
@@ -70,11 +72,16 @@ pair<string, string> TournamentManager::chooseTwoPlayersForFightAfterEqualShare(
 }
 
 void TournamentManager::addPointsToPlayersAfterFight(int winner, string firstPlayer, string secondPlayer, int numOfFirstPlayerMatch, int numOfSecondPlayerMatch) {
+	int player1Doubler = numOfFirstPlayerMatch <= 30 ? 1 : 0;
+	int player2Doubler = numOfSecondPlayerMatch <= 30 ? 1 : 0;
 	if (winner == 0) {
-		if ()
-		playersPoints[firstPlayer]++;
-		playersPoints[secondPlayer]++;
+		playersPoints[firstPlayer] += player1Doubler * 1;
+		playersPoints[secondPlayer] += player2Doubler * 1;
 	}
+	else if (winner == 1)
+		playersPoints[firstPlayer] += player1Doubler * 3;
+	else
+		playersPoints[secondPlayer] += player2Doubler * 3;
 }
 
 void TournamentManager::threadFuncThatDoesFights() {
@@ -98,25 +105,27 @@ void TournamentManager::threadFuncThatDoesFights() {
 		}
 		winner = gm.getWinner();
 		pointCountLock.lock();
+		addPointsToPlayersAfterFight(winner, curFightPlayers.first, curFightPlayers.second, numOfFirstPlayerMatch, numOfSecondPlayerMatch);
+		pointCountLock.unlock();
 	}
 
 }
 
-void TournamentManager::run() const
+void TournamentManager::run()
 {
-	//unique_ptr<PlayerAlgorithm> p3 = (id2factory.find("3"))->second();
-
-/*
-	for (auto& pair : id2factory) {
-		const auto& id = pair.first;
-		std::cout << id << ": ";
-		const auto& factoryMethod = pair.second;
-		factoryMethod()->foo();
-	}*/
+	int i = 0;
+	vector<thread> allThreadsVec;
+	for (i = 0; i < numOfThreads - 1; i++)
+		allThreadsVec.emplace_back(&TournamentManager::threadFuncThatDoesFights, this);
 	
+	threadFuncThatDoesFights();
+
+	for (auto& t : allThreadsVec) {
+		t.join();
+	}
 }
 
-void TournamentManager::getAllDLs(string path)
+bool TournamentManager::getAllDLs(string path)
 {
 	FILE *dl;   // handle to read directory 
 	const char *command_str = ("ls "+path+"/*.so").c_str();  // command string to get dynamic lib names
@@ -124,10 +133,8 @@ void TournamentManager::getAllDLs(string path)
 	char curDLName[BUF_SIZE]; //name of the current dl
 	void *dlib;
 	dl = popen(command_str, "r");
-	if (!dl) {
-		perror("popen");
-		exit(-1);
-	}
+	if (!dl)
+		return false;
 	while (fgets(in_buf, BUF_SIZE, dl)) {
 		// trim off the whitespace 
 		char *ws = strpbrk(in_buf, " \t\n");
@@ -142,6 +149,28 @@ void TournamentManager::getAllDLs(string path)
 		// add the handle to our list
 		dl_list.insert(dl_list.end(), dlib);
 	}
+	if (dl_list.size() == 0)
+		return false;
+	return true;
+}
+
+void TournamentManager::setNumOfThreads(int numOfT)
+{
+	numOfThreads = numOfT;
+}
+
+bool compareTwoPlayersScores(pair<string, int> p1Pair, pair<string, int> p2Pair) {
+	return (p1Pair.second > p2Pair.second);
+}
+
+void TournamentManager::printScoreList() {
+	int i = 0;
+	vector<pair<string, int>> scoresVec;
+	for (auto& pair : playersPoints)
+		scoresVec.push_back(pair);
+	sort(scoresVec.begin(), scoresVec.end(), compareTwoPlayersScores);
+	for (i = 0; i < scoresVec.size(); i++)
+		cout << scoresVec[i].first << " " << scoresVec[i].second << endl;
 }
 
 

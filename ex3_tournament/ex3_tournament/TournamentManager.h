@@ -31,6 +31,7 @@ class TournamentManager {
 	map<string, int> playersPoints;
 	list<void *> dl_list; // list to hold handles for dynamic libs 
 	map<pair<string, string>, int> matchesCountMap;
+	int numOfThreads;
 	pair<string, string> chooseTwoPlayersForFightUntilEqualShare();
 	string chooseFightingPartner(string firstPlayer, int numOfMatchesPerPlayer);
 	pair<string, string> chooseTwoPlayersForFightAfterEqualShare();
@@ -44,7 +45,9 @@ class TournamentManager {
 public:
 	static TournamentManager& getTournamentManager();
 	void registerAlgorithm(std::string id, std::function<std::unique_ptr<PlayerAlgorithm>()> factoryMethod);
-	void run() const;
-	void getAllDLs(string path);
+	void run();
+	bool getAllDLs(string path);
+	void setNumOfThreads(int numOfT);
+	void printScoreList();
 };
 #endif
