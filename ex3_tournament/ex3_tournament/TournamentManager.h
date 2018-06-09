@@ -35,9 +35,11 @@ class TournamentManager {
 	pair<string, string> chooseTwoPlayersForFightUntilEqualShare();
 	string chooseFightingPartner(string firstPlayer, int numOfMatchesPerPlayer);
 	pair<string, string> chooseTwoPlayersForFightAfterEqualShare();
+	pair<string, string> chooseTwoPlayersForFight(bool beforeEqualShare);
 	void threadFuncThatDoesFights();
 	string choosePlayerWithMissingFights(int neededFights);
 	void addPointsToPlayersAfterFight(int winner, string firstPlayer, string secondPlayer, int numOfFirstPlayerMatch, int numOfSecondPlayerMatch);
+	void doFights(bool beforeEqualShare);
 	mutex matchCountLock;
 	mutex pointCountLock;
 	// private ctor

@@ -14,6 +14,7 @@ RSPPlayer_204573356::RSPPlayer_204573356()
 	this->myPieceCount["myScissors"] = 0;
 	this->myPieceCount["myPapers"] = 0;
 	this->myPieceCount["myBombs"] = 0;
+	srand(time(NULL));
 }
 
 /*
