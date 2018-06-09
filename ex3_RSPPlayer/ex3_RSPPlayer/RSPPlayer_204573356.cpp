@@ -310,6 +310,11 @@ unique_ptr<Move> RSPPlayer_204573356::getMove()
 		}
 	}
 	while (pointToMoveTo.getX() == -1) { //if no good move found, randomly picks a piece and moves it in a random direction.
+		if (myPiecesPositions.size() == 0) {
+			printf("myPiecesPositions.size() == 0\n");
+			return make_unique<GameMove>(-1, -1, -1, -1);
+		}
+			
 		randIndexInPosVector = rand() % myPiecesPositions.size();
 		findLegalMove(myPiecesPositions[randIndexInPosVector], pointToMoveTo);
 	}

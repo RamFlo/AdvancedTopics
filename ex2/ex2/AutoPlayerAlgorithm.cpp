@@ -307,6 +307,8 @@ unique_ptr<Move> AutoPlayerAlgorithm::getMove()
 		}
 	}
 	while (pointToMoveTo.getX() == -1) { //if no good move found, randomly picks a piece and moves it in a random direction.
+		if (myPiecesPositions.size() == 0)
+			printf("myPiecesPositions.size() == 0\n");
 		randIndexInPosVector = rand() % myPiecesPositions.size();
 		findLegalMove(myPiecesPositions[randIndexInPosVector], pointToMoveTo);
 	}

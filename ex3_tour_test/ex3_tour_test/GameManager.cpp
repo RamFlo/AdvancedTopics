@@ -6,9 +6,9 @@ GameManager::GameManager(unique_ptr<PlayerAlgorithm> p1, unique_ptr<PlayerAlgori
 	this->player1Algorithm = move(p1);
 	this->player2Algorithm = move(p2);
 
-	this->p1InitialBoard = make_unique<GameBoard>();
-	this->p2InitialBoard = make_unique<GameBoard>();
-	this->gBoard = make_unique<GameBoard>();
+	this->p1InitialBoard = make_unique<GameBoard_204573356>();
+	this->p2InitialBoard = make_unique<GameBoard_204573356>();
+	this->gBoard = make_unique<GameBoard_204573356>();
 	this->pieceCountMap["player1Flags"] = 0;
 	this->pieceCountMap["player1Jokers"] = 0;
 	this->pieceCountMap["player1Rocks"] = 0;
@@ -114,9 +114,9 @@ bool  GameManager::handlePositioningLine(PiecePosition & curPiece, int player) {
 		return false;
 	}
 	if (player == 1)
-		this->p1InitialBoard->setGamePieceOnBoard(curPiece, 1); //putting the piece on the player's board
+		this->p1InitialBoard->setGamePiece_204573356OnBoard(curPiece, 1); //putting the piece on the player's board
 	else
-		this->p2InitialBoard->setGamePieceOnBoard(curPiece, 2); //putting the piece on the player's board
+		this->p2InitialBoard->setGamePiece_204573356OnBoard(curPiece, 2); //putting the piece on the player's board
 	if (!updatePieceCount(player, curPiece.getPiece(), 1)) { //checking there aren't too many instances of the current piece
 		return false;
 	}
@@ -217,20 +217,20 @@ void GameManager::fight(vector<unique_ptr<FightInfo>>& fightsVecToFill, Point& p
 		fightWinner = 1;
 	}
 	else { //pos has both players' pieces
-		p1 = this->p1InitialBoard->getGamePiece(pos).getPiece();
-		p2 = this->p2InitialBoard->getGamePiece(pos).getPiece();
+		p1 = this->p1InitialBoard->getGamePiece_204573356(pos).getPiece();
+		p2 = this->p2InitialBoard->getGamePiece_204573356(pos).getPiece();
 		if (p1 == 'J')
-			p1 = this->p1InitialBoard->getGamePiece(pos).getJokerRep();
+			p1 = this->p1InitialBoard->getGamePiece_204573356(pos).getJokerRep();
 		if (p2 == 'J')
-			p2 = this->p1InitialBoard->getGamePiece(pos).getJokerRep();
-		fightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(p1, p2, p1InitialBoard->getGamePiece(pos).getPiece(), p2InitialBoard->getGamePiece(pos).getPiece());
+			p2 = this->p1InitialBoard->getGamePiece_204573356(pos).getJokerRep();
+		fightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(p1, p2, p1InitialBoard->getGamePiece_204573356(pos).getPiece(), p2InitialBoard->getGamePiece_204573356(pos).getPiece());
 	}
 	if (shouldUpdateFightsVector)
 		fightsVecToFill.push_back(make_unique<GameFightInfo>(pos, p1, p2, fightWinner));
 	if (fightWinner == 1)
-		this->gBoard->setGamePieceOnBoard(p1InitialBoard->getGamePiece(pos), 1);
+		this->gBoard->setGamePiece_204573356OnBoard(p1InitialBoard->getGamePiece_204573356(pos), 1);
 	else if (fightWinner == 2)
-		this->gBoard->setGamePieceOnBoard(p2InitialBoard->getGamePiece(pos), 2);
+		this->gBoard->setGamePiece_204573356OnBoard(p2InitialBoard->getGamePiece_204573356(pos), 2);
 }
 
 /*
@@ -265,7 +265,7 @@ initializes the game's board according to the pieces positions vectors supplied 
 First creates two boards, and then merges them into one game board.
 returns true if the positioning is valid and both players still have flags left. Else, returns false.
 */
-bool GameManager::initializeGameBoard()
+bool GameManager::initializeGameBoard_204573356()
 {
 	bool validPositioning = true;
 	vector<unique_ptr<PiecePosition>> player1Positions, player2Positions;
@@ -309,16 +309,16 @@ returns whether or not the piece at myPiecePosition has a legal move.
 */
 bool GameManager::isThereLegalMove(const Point & myPiecePosition) {
 	int col = myPiecePosition.getX(), row = myPiecePosition.getY();
-	//char myPiece = this->gBoard->getGamePiece(myPiecePosition).getPiece();
-	if (!isMovingPiece(this->gBoard->getGamePiece(myPiecePosition)))
+	//char myPiece = this->gBoard->getGamePiece_204573356(myPiecePosition).getPiece();
+	if (!isMovingPiece(this->gBoard->getGamePiece_204573356(myPiecePosition)))
 		return false;
-	if (col + 1 <= M && this->gBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
+	if (col + 1 <= M && this->gBoard->getGamePiece_204573356(MyPoint(col + 1, row)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
 		return true;
-	if (col - 1 >= 1 && this->gBoard->getGamePiece(MyPoint(col - 1, row)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
+	if (col - 1 >= 1 && this->gBoard->getGamePiece_204573356(MyPoint(col - 1, row)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
 		return true;
-	if (row + 1 <= N && this->gBoard->getGamePiece(MyPoint(col, row + 1)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
+	if (row + 1 <= N && this->gBoard->getGamePiece_204573356(MyPoint(col, row + 1)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
 		return true;
-	if (row - 1 >= 1 && this->gBoard->getGamePiece(MyPoint(col, row - 1)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
+	if (row - 1 >= 1 && this->gBoard->getGamePiece_204573356(MyPoint(col, row - 1)).getPlayer() != this->gBoard->getPlayer(myPiecePosition))
 		return true;
 	return false;
 }
@@ -345,7 +345,7 @@ int GameManager::getOtherPlayer(int player) {
 }
 
 
-bool GameManager::isMovingPiece(const GamePiece & piece) {
+bool GameManager::isMovingPiece(const GamePiece_204573356 & piece) {
 	char pieceType = piece.getPiece();
 	if (pieceType == 'J')
 		pieceType = piece.getJokerRep();
@@ -365,7 +365,7 @@ bool GameManager::isLegalMove(int player, const Point & fromPoint, const Point &
 		return false;
 	if (this->gBoard->getPlayer(toPoint) == player)
 		return false;
-	if (!isMovingPiece(this->gBoard->getGamePiece(fromPoint)))
+	if (!isMovingPiece(this->gBoard->getGamePiece_204573356(fromPoint)))
 		return false;
 	xDiff = abs(fromPoint.getX() - toPoint.getX());
 	yDiff= abs(fromPoint.getY() - toPoint.getY());
@@ -386,9 +386,9 @@ bool GameManager::isLegalJokerChange(const JokerChange & curJokerChange, int pla
 		return false;
 	if (curJokerChange.getJokerNewRep() != 'R' && curJokerChange.getJokerNewRep() != 'P' && curJokerChange.getJokerNewRep() != 'S' && curJokerChange.getJokerNewRep() != 'B')
 		return false;
-	if (this->gBoard->getGamePiece(curJokerChange.getJokerChangePosition()).getPlayer() != player)
+	if (this->gBoard->getGamePiece_204573356(curJokerChange.getJokerChangePosition()).getPlayer() != player)
 		return false;
-	if (this->gBoard->getGamePiece(curJokerChange.getJokerChangePosition()).getPiece() != 'J')
+	if (this->gBoard->getGamePiece_204573356(curJokerChange.getJokerChangePosition()).getPiece() != 'J')
 		return false;
 	return true;
 }
@@ -422,25 +422,25 @@ void GameManager::playGame() {
 			this->player2Algorithm->notifyOnOpponentMove(*(curMove));
 		else
 			this->player1Algorithm->notifyOnOpponentMove(*(curMove));
-		movingPieceType = this->gBoard->getGamePiece(curMove->getFrom()).getPiece();
+		movingPieceType = this->gBoard->getGamePiece_204573356(curMove->getFrom()).getPiece();
 		if (movingPieceType == 'J')
-			movingPieceCurType = this->gBoard->getGamePiece(curMove->getFrom()).getJokerRep();
+			movingPieceCurType = this->gBoard->getGamePiece_204573356(curMove->getFrom()).getJokerRep();
 		else
 			movingPieceCurType = '#';
 		if (this->gBoard->getPlayer(curMove->getTo()) == 0) //if the move's destination square is empty, set the destination square piece.
-			this->gBoard->setGamePieceOnBoard(GamePiece(movingPieceType, curMove->getTo().getX(), curMove->getTo().getY(), movingPieceCurType, curPlayer), curPlayer);
+			this->gBoard->setGamePiece_204573356OnBoard(GamePiece_204573356(movingPieceType, curMove->getTo().getX(), curMove->getTo().getY(), movingPieceCurType, curPlayer), curPlayer);
 		else {//if the move's destination square is not empty, handle fight
 			turnsWithoutFight = 0;
 			curPlayerPiece = movingPieceType;
-			opponentPiece = this->gBoard->getGamePiece(curMove->getTo()).getPiece();
+			opponentPiece = this->gBoard->getGamePiece_204573356(curMove->getTo()).getPiece();
 			if (curPlayerPiece == 'J')
 				curPlayerPiece = movingPieceCurType;
 			if (opponentPiece == 'J')
-				opponentPiece = this->gBoard->getGamePiece(curMove->getTo()).getJokerRep();
+				opponentPiece = this->gBoard->getGamePiece_204573356(curMove->getTo()).getJokerRep();
 			if (curPlayer == 1)
-				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(curPlayerPiece, opponentPiece, movingPieceType, this->gBoard->getGamePiece(curMove->getTo()).getPiece());
+				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(curPlayerPiece, opponentPiece, movingPieceType, this->gBoard->getGamePiece_204573356(curMove->getTo()).getPiece());
 			else
-				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(opponentPiece, curPlayerPiece, this->gBoard->getGamePiece(curMove->getTo()).getPiece(), movingPieceType);
+				curFightWinner = fightBetweenTwoPiecesAndUpdatePieceCount(opponentPiece, curPlayerPiece, this->gBoard->getGamePiece_204573356(curMove->getTo()).getPiece(), movingPieceType);
 			if (curPlayer == 1) {
 				GameFightInfo curFightInfo(curMove->getTo(), curPlayerPiece, opponentPiece, curFightWinner);
 				this->player1Algorithm->notifyFightResult(curFightInfo);
@@ -452,11 +452,11 @@ void GameManager::playGame() {
 				this->player2Algorithm->notifyFightResult(curFightInfo);
 			}
 			if (curFightWinner == curPlayer)
-				this->gBoard->setGamePieceOnBoard(GamePiece(movingPieceType, curMove->getTo().getX(), curMove->getTo().getY(), movingPieceCurType, curPlayer), curPlayer);
+				this->gBoard->setGamePiece_204573356OnBoard(GamePiece_204573356(movingPieceType, curMove->getTo().getX(), curMove->getTo().getY(), movingPieceCurType, curPlayer), curPlayer);
 			else if (curFightWinner == 0)
-				this->gBoard->setGamePieceOnBoard(GamePiece('\0', curMove->getTo().getX(), curMove->getTo().getY(), '\0', 0), 0); //if both pieces tied, empty destination square
+				this->gBoard->setGamePiece_204573356OnBoard(GamePiece_204573356('\0', curMove->getTo().getX(), curMove->getTo().getY(), '\0', 0), 0); //if both pieces tied, empty destination square
 		}
-		this->gBoard->setGamePieceOnBoard(GamePiece('\0', curMove->getFrom().getX(), curMove->getFrom().getY(), '\0', 0), 0); //empty source point of move
+		this->gBoard->setGamePiece_204573356OnBoard(GamePiece_204573356('\0', curMove->getFrom().getX(), curMove->getFrom().getY(), '\0', 0), 0); //empty source point of move
 		if (checkIfPlayerHasNoFlags(this->getOtherPlayer(curPlayer))) {
 			this->winner = curPlayer;
 			this->reason = "All flags of the opponent are captured";
@@ -472,7 +472,7 @@ void GameManager::playGame() {
 				this->winner = this->getOtherPlayer(curPlayer);
 				return;
 			}
-			this->gBoard->setGamePieceOnBoard(GamePiece('J', curJokerChange->getJokerChangePosition().getX(), curJokerChange->getJokerChangePosition().getY(), curJokerChange->getJokerNewRep(), curPlayer), curPlayer);
+			this->gBoard->setGamePiece_204573356OnBoard(GamePiece_204573356('J', curJokerChange->getJokerChangePosition().getX(), curJokerChange->getJokerChangePosition().getY(), curJokerChange->getJokerNewRep(), curPlayer), curPlayer);
 		}
 		curPlayer = this->getOtherPlayer(curPlayer); //switch player's turn
 	}
@@ -496,9 +496,9 @@ void GameManager::playGame() {
 //			for (col = 1; col <= M; col++) {
 //				if (this->gBoard->getPlayer(MyPoint(col,row))!=0) {
 //					if (this->gBoard->getPlayer(MyPoint(col, row)) == 1)
-//						curLetter = this->gBoard->getGamePiece(MyPoint(col,row)).getPiece();
+//						curLetter = this->gBoard->getGamePiece_204573356(MyPoint(col,row)).getPiece();
 //					else
-//						curLetter = tolower(this->gBoard->getGamePiece(MyPoint(col, row)).getPiece());
+//						curLetter = tolower(this->gBoard->getGamePiece_204573356(MyPoint(col, row)).getPiece());
 //					fout << curLetter;
 //				}
 //				else

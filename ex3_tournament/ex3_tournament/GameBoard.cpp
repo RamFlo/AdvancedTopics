@@ -24,5 +24,8 @@ int GameBoard::getPlayer(const Point & pos) const
 //sets a piece on board accoring to the given piece
 void GameBoard::setGamePieceOnBoard(const PiecePosition & piece,int player)
 {
-	this->finalBoard[piece.getPosition().getY() - 1][piece.getPosition().getX() - 1] = make_unique<GamePiece>(piece.getPiece(), piece.getPosition().getX(), piece.getPosition().getY(),piece.getJokerRep(),player);
+	char jokerRep = '#';
+	if (piece.getPiece() == 'J')
+		jokerRep = piece.getJokerRep();
+	this->finalBoard[piece.getPosition().getY() - 1][piece.getPosition().getX() - 1] = make_unique<GamePiece>(piece.getPiece(), piece.getPosition().getX(), piece.getPosition().getY(), jokerRep,player);
 }

@@ -90,15 +90,30 @@ void TournamentManager::doFights(bool beforeEqualShare) {
 		numOfFirstPlayerMatch = playersGames[curFightPlayers.first];
 		numOfFirstPlayerMatch = playersGames[curFightPlayers.second];
 		matchCountLock.unlock();
+		if (curFightPlayers.first == "308446624" || curFightPlayers.second == "308446624")
+			cout << "doFights 1" << endl;
 		GameManager gm((id2factory.find(curFightPlayers.first))->second(), (id2factory.find(curFightPlayers.second))->second());
-		if (gm.initializeGameBoard()) {
+		if (curFightPlayers.first == "308446624" || curFightPlayers.second == "308446624")
+			cout << "doFights 2" << endl;
+		if (gm.initializeGameBoard_204573356()) {
+			if (curFightPlayers.first == "308446624" || curFightPlayers.second == "308446624")
+				cout << "doFights 3" << endl;
 			gm.playGame();
+			if (curFightPlayers.first == "308446624" || curFightPlayers.second == "308446624")
+				cout << "doFights 4" << endl;
 		}
 		winner = gm.getWinner();
+		if (curFightPlayers.first == "308446624" || curFightPlayers.second == "308446624")
+			cout << "doFights 5" << endl;
 		pointCountLock.lock();
 		addPointsToPlayersAfterFight(winner, curFightPlayers.first, curFightPlayers.second, numOfFirstPlayerMatch, numOfSecondPlayerMatch);
 		pointCountLock.unlock();
+		if (curFightPlayers.first == "308446624" || curFightPlayers.second == "308446624")
+			cout << "doFights 6" << endl;
 	}
+	if (curFightPlayers.first == "308446624" || curFightPlayers.second == "308446624")
+		cout << "doFights 7" << endl;
+	cout << "while broken!" << endl;
 }
 
 void TournamentManager::threadFuncThatDoesFights() {
@@ -111,53 +126,50 @@ void TournamentManager::run()
 	int i = 0;
 	list<void *>::iterator dl_itr;
 	vector<thread> allThreadsVec;
+	cout << "run 1" << endl;
 	for (i = 0; i < numOfThreads - 1; i++)
 		allThreadsVec.emplace_back(&TournamentManager::threadFuncThatDoesFights, this);
+	cout << "run 2" << endl;
 	threadFuncThatDoesFights();
+	cout << "run 3" << endl;
 	for (auto& t : allThreadsVec)
 		t.join();
+	cout << "run 4" << endl;
+
 
 	id2factory.clear();
+	cout << "run 5" << endl;
 	for (dl_itr = dl_list.begin(); dl_itr != dl_list.end(); dl_itr++)
 		dlclose(*dl_itr);
+	cout << "run 6" << endl;
 }
 
 bool TournamentManager::getAllDLs(string path)
 {
 	FILE *dl;   // handle to read directory 
-	string cmd_str = "ls " + path + "/*.so";
-	const char *command_str = cmd_str.c_str();  // command string to get dynamic lib names
+	const char *command_str = ("ls "+path+"/*.so").c_str();  // command string to get dynamic lib names
 	char in_buf[BUF_SIZE];
 	char curDLName[BUF_SIZE]; //name of the current dl
 	void *dlib;
 	dl = popen(command_str, "r");
-	if (!dl) {
-		pclose(dl);
+	if (!dl)
 		return false;
-	}
-		
 	while (fgets(in_buf, BUF_SIZE, dl)) {
 		// trim off the whitespace 
 		char *ws = strpbrk(in_buf, " \t\n");
 		if (ws) *ws = '\0';
 		// append ./ to the front of the lib name
-		sprintf(curDLName, "%s", in_buf);
+		sprintf(curDLName, "./%s", in_buf);
 		dlib = dlopen(curDLName, RTLD_NOW);
 		if (dlib == NULL) {
 			cerr << dlerror() << endl;
-			pclose(dl);
 			exit(-1);
 		}
 		// add the handle to our list
 		dl_list.insert(dl_list.end(), dlib);
 	}
 	if (dl_list.size() == 0)
-	{
-		cout << "no *.so files found." << endl;
-		pclose(dl);
 		return false;
-	}
-	pclose(dl);
 	return true;
 }
 

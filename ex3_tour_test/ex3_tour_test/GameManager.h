@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 #include "PlayerAlgorithm.h"
-#include "GameBoard.h"
+#include "GameBoard_204573356.h"
 #include "GameFightInfo.h"
 
 //--------------------------
@@ -28,7 +28,7 @@ using namespace std;
 //--------------------------
 class GameManager {
 	unique_ptr<PlayerAlgorithm> player1Algorithm, player2Algorithm;
-	unique_ptr<GameBoard> gBoard,p1InitialBoard, p2InitialBoard;
+	unique_ptr<GameBoard_204573356> gBoard,p1InitialBoard, p2InitialBoard;
 	bool isPlayerSquareEmptyDuringPositioning(int player, const Point & piecePos);
 	bool handlePositioningLine(PiecePosition & curPiece, int player);
 	bool isEnoughFlags(int player);
@@ -43,14 +43,14 @@ class GameManager {
 	bool isThereLegalMove(const Point & myPiecePosition);
 	bool playerHasLegalMove(int player);
 	int getOtherPlayer(int player);
-	bool isMovingPiece(const GamePiece & piece);
+	bool isMovingPiece(const GamePiece_204573356 & piece);
 	bool isLegalMove(int player, const Point & fromPoint, const Point & toPoint);
 	bool checkIfPlayerHasNoFlags(int player);
 	bool isLegalJokerChange(const JokerChange & curJokerChange, int player);
 	map<string, int> pieceCountMap;
 public:
 	GameManager(unique_ptr<PlayerAlgorithm> p1, unique_ptr<PlayerAlgorithm> p2);
-	bool initializeGameBoard();
+	bool initializeGameBoard_204573356();
 	void playGame();
 	int getWinner();
 	//void createOutputFile();
