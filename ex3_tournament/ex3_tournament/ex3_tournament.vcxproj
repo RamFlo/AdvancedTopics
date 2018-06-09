@@ -121,6 +121,7 @@
     <ClInclude Include="FightInfo.h" />
     <ClInclude Include="GameBoard.h" />
     <ClInclude Include="GameFightInfo.h" />
+    <ClInclude Include="GameJokerChange.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GamePiece.h" />
     <ClInclude Include="JokerChange.h" />
@@ -135,6 +136,7 @@
     <ClCompile Include="AlgorithmRegistration.cpp" />
     <ClCompile Include="GameBoard.cpp" />
     <ClCompile Include="GameFightInfo.cpp" />
+    <ClCompile Include="GameJokerChange.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GamePiece.cpp" />
     <ClCompile Include="main.cpp" />

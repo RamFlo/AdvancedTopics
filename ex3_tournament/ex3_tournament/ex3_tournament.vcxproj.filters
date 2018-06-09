@@ -60,6 +60,9 @@
     <ClInclude Include="MyPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameJokerChange.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlgorithmRegistration.cpp">
@@ -84,6 +87,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MyPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameJokerChange.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
