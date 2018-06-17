@@ -1,10 +1,10 @@
 #include "GameBoard_204573356.h"
-
+//Returns the game piece in a given point
 GamePiece_204573356 & GameBoard_204573356::getGamePiece(const Point & pos) const
 {
 	return *(this->finalBoard[pos.getY() - 1][pos.getX() - 1]);
 }
-
+//GameBoard Ctor
 GameBoard_204573356::GameBoard_204573356()
 {
 	for (int i = 0; i < N; i++) {

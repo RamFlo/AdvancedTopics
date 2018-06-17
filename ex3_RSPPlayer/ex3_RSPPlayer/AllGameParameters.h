@@ -8,6 +8,7 @@
 // @authors Guy Keller, Ram Shimon TAU - Advanced Topics in Programming - 2018 Semester B
 
 //--------------------------
+//class for all constants and pre-defined values
 #define N 10
 #define M 10
 #define NUM_OF_R 2 

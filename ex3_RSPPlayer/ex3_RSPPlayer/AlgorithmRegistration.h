@@ -5,7 +5,7 @@
 #include <memory>
 
 #include "PlayerAlgorithm.h"
-
+//class for registering algorithms
 class AlgorithmRegistration {
 public:
 	AlgorithmRegistration(std::string id, std::function<std::unique_ptr<PlayerAlgorithm>()>);

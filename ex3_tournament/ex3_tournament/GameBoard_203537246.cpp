@@ -1,5 +1,5 @@
 #include "GameBoard_203537246.h"
-
+//returns the game piece in the given position
 GamePiece_203537246 & GameBoard_203537246::getGamePiece(const Point & pos) const
 {
 	return *(this->finalBoard[pos.getY() - 1][pos.getX() - 1]);

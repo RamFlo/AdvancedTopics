@@ -7,7 +7,7 @@ TournamentManager_203537246 & TournamentManager_203537246::getTournamentManager(
 {
 	return theTournamentManager_203537246;
 }
-
+//registers a new algorithm, given its ID and PlayerAlgorithm
 void TournamentManager_203537246::registerAlgorithm(std::string id, std::function<std::unique_ptr<PlayerAlgorithm>()> factoryMethod)
 {
 	if (playersGames.find(id) != playersGames.end())
@@ -26,6 +26,7 @@ void TournamentManager_203537246::registerAlgorithm(std::string id, std::functio
 
 }
 
+//Finds and returns a player that has not finished all of his fights
 string TournamentManager_203537246::choosePlayerWithMissingFights(int neededFights) {
 	//std::thread::id this_id = std::this_thread::get_id(); //remove line
 	for (auto& pair : playersGames) {
@@ -35,6 +36,7 @@ string TournamentManager_203537246::choosePlayerWithMissingFights(int neededFigh
 	return "";
 }
 
+//Given a player who still has missing fights, returns a fighting partner with whom he has fought less fights than he equally should
 string TournamentManager_203537246::chooseFightingPartner(string firstPlayer, int numOfMatchesPerPlayer) {
 	//std::thread::id this_id = std::this_thread::get_id(); //remove line
 	string curPartnerName;
@@ -46,6 +48,7 @@ string TournamentManager_203537246::chooseFightingPartner(string firstPlayer, in
 	return "";
 }
 
+//uses the two functions above to return two IDs, of the two players who should be the next fight in the tournament
 pair<string, string> TournamentManager_203537246::chooseTwoPlayersForFight(bool beforeEqualShare) {
 	int numOfPlayers = dl_list.size();
 	int numOfMatchesPerPlayer = NUM_OF_PLAYER_MATCHES / (numOfPlayers - 1);
@@ -62,6 +65,7 @@ pair<string, string> TournamentManager_203537246::chooseTwoPlayersForFight(bool 
 	return make_pair(firstPlayer, secondPlayer);
 }
 
+//adds points to each player after a fight, according to the winner
 void TournamentManager_203537246::addPointsToPlayersAfterFight(int winner, string firstPlayer, string secondPlayer, int numOfFirstPlayerMatch, int numOfSecondPlayerMatch) {
 	int player1Doubler = numOfFirstPlayerMatch <= 30 ? 1 : 0;
 	int player2Doubler = numOfSecondPlayerMatch <= 30 ? 1 : 0;
@@ -75,6 +79,7 @@ void TournamentManager_203537246::addPointsToPlayersAfterFight(int winner, strin
 		playersPoints[secondPlayer] += player2Doubler * 3;
 }
 
+//Repeatedly chooses two players and conducts a fight between them, until there are no more fights to be held
 void TournamentManager_203537246::doFights(bool beforeEqualShare) {
 	pair<string, string> curFightPlayers;
 	int winner;
@@ -101,11 +106,14 @@ void TournamentManager_203537246::doFights(bool beforeEqualShare) {
 	}
 }
 
+//conducts fights until all players fight the maximal equal number of fights against each other.
+//Then, completes each players fight quota against other players.
 void TournamentManager_203537246::threadFuncThatDoesFights() {
 	doFights(true);
 	doFights(false);
 }
 
+//runs the tournament
 void TournamentManager_203537246::run()
 {
 	int i = 0;
@@ -122,6 +130,7 @@ void TournamentManager_203537246::run()
 		dlclose(*dl_itr);
 }
 
+//gets all the dls, and by doing so gets all the player algorithms
 bool TournamentManager_203537246::getAllDLs(string path)
 {
 	FILE *dl;   // handle to read directory 
@@ -161,15 +170,18 @@ bool TournamentManager_203537246::getAllDLs(string path)
 	return true;
 }
 
+//sets the num of thread
 void TournamentManager_203537246::setNumOfThreads(int numOfT)
 {
 	numOfThreads = numOfT;
 }
 
+//compares the amount of points two players have
 bool compareTwoPlayersScores(pair<string, int> p1Pair, pair<string, int> p2Pair) {
 	return (p1Pair.second > p2Pair.second);
 }
 
+//prints the list of players from most points won to least points won
 void TournamentManager_203537246::printScoreList() {
 	int i = 0;
 	vector<pair<string, int>> scoresVec;

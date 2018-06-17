@@ -1,5 +1,5 @@
 #include "GameFightInfo_204573356.h"
-
+//GameFightInfo_204573356 Ctor
 GameFightInfo_204573356::GameFightInfo_204573356(const Point & fPos, char p1P, char p2P, int winner)
 {
 	this->p1Piece = p1P;
