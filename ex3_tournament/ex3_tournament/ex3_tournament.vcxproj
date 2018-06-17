@@ -119,29 +119,29 @@
     <ClInclude Include="AllGameParameters.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="FightInfo.h" />
-    <ClInclude Include="GameBoard.h" />
-    <ClInclude Include="GameFightInfo.h" />
-    <ClInclude Include="GameJokerChange.h" />
-    <ClInclude Include="GameManager.h" />
-    <ClInclude Include="GamePiece.h" />
+    <ClInclude Include="GameBoard_203537246.h" />
+    <ClInclude Include="GameFightInfo_203537246.h" />
+    <ClInclude Include="GameJokerChange_203537246.h" />
+    <ClInclude Include="GameManager_203537246.h" />
+    <ClInclude Include="GamePiece_203537246.h" />
     <ClInclude Include="JokerChange.h" />
     <ClInclude Include="Move.h" />
-    <ClInclude Include="MyPoint.h" />
+    <ClInclude Include="MyPoint_203537246.h" />
     <ClInclude Include="PiecePosition.h" />
     <ClInclude Include="PlayerAlgorithm.h" />
     <ClInclude Include="Point.h" />
-    <ClInclude Include="TournamentManager.h" />
+    <ClInclude Include="TournamentManager_203537246.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlgorithmRegistration.cpp" />
-    <ClCompile Include="GameBoard.cpp" />
-    <ClCompile Include="GameFightInfo.cpp" />
-    <ClCompile Include="GameJokerChange.cpp" />
-    <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="GamePiece.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="MyPoint.cpp" />
-    <ClCompile Include="TournamentManager.cpp" />
+    <ClCompile Include="GameBoard_203537246.cpp" />
+    <ClCompile Include="GameFightInfo_203537246.cpp" />
+    <ClCompile Include="GameJokerChange_203537246.cpp" />
+    <ClCompile Include="GameManager_203537246.cpp" />
+    <ClCompile Include="GamePiece_203537246.cpp" />
+    <ClCompile Include="main_203537246.cpp" />
+    <ClCompile Include="MyPoint_203537246.cpp" />
+    <ClCompile Include="TournamentManager_203537246.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

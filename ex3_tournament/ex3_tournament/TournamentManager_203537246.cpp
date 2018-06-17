@@ -1,14 +1,14 @@
-#include "TournamentManager.h"
+#include "TournamentManager_203537246.h"
 #include "AlgorithmRegistration.h"
 #include <algorithm>
 #include <iostream>
 
-TournamentManager & TournamentManager::getTournamentManager()
+TournamentManager_203537246 & TournamentManager_203537246::getTournamentManager()
 {
-	return theTournamentManager;
+	return theTournamentManager_203537246;
 }
 
-void TournamentManager::registerAlgorithm(std::string id, std::function<std::unique_ptr<PlayerAlgorithm>()> factoryMethod)
+void TournamentManager_203537246::registerAlgorithm(std::string id, std::function<std::unique_ptr<PlayerAlgorithm>()> factoryMethod)
 {
 	if (playersGames.find(id) != playersGames.end())
 	{
@@ -26,7 +26,7 @@ void TournamentManager::registerAlgorithm(std::string id, std::function<std::uni
 
 }
 
-string TournamentManager::choosePlayerWithMissingFights(int neededFights) {
+string TournamentManager_203537246::choosePlayerWithMissingFights(int neededFights) {
 	//std::thread::id this_id = std::this_thread::get_id(); //remove line
 	for (auto& pair : playersGames) {
 		if (pair.second < neededFights)
@@ -35,7 +35,7 @@ string TournamentManager::choosePlayerWithMissingFights(int neededFights) {
 	return "";
 }
 
-string TournamentManager::chooseFightingPartner(string firstPlayer, int numOfMatchesPerPlayer) {
+string TournamentManager_203537246::chooseFightingPartner(string firstPlayer, int numOfMatchesPerPlayer) {
 	//std::thread::id this_id = std::this_thread::get_id(); //remove line
 	string curPartnerName;
 	for (auto& pair : playersGames) {
@@ -46,7 +46,7 @@ string TournamentManager::chooseFightingPartner(string firstPlayer, int numOfMat
 	return "";
 }
 
-pair<string, string> TournamentManager::chooseTwoPlayersForFight(bool beforeEqualShare) {
+pair<string, string> TournamentManager_203537246::chooseTwoPlayersForFight(bool beforeEqualShare) {
 	int numOfPlayers = dl_list.size();
 	int numOfMatchesPerPlayer = NUM_OF_PLAYER_MATCHES / (numOfPlayers - 1);
 	string firstPlayer = beforeEqualShare ? (choosePlayerWithMissingFights(numOfMatchesPerPlayer * (numOfPlayers - 1))) : (choosePlayerWithMissingFights(NUM_OF_PLAYER_MATCHES));
@@ -62,7 +62,7 @@ pair<string, string> TournamentManager::chooseTwoPlayersForFight(bool beforeEqua
 	return make_pair(firstPlayer, secondPlayer);
 }
 
-void TournamentManager::addPointsToPlayersAfterFight(int winner, string firstPlayer, string secondPlayer, int numOfFirstPlayerMatch, int numOfSecondPlayerMatch) {
+void TournamentManager_203537246::addPointsToPlayersAfterFight(int winner, string firstPlayer, string secondPlayer, int numOfFirstPlayerMatch, int numOfSecondPlayerMatch) {
 	int player1Doubler = numOfFirstPlayerMatch <= 30 ? 1 : 0;
 	int player2Doubler = numOfSecondPlayerMatch <= 30 ? 1 : 0;
 	if (winner == 0) {
@@ -75,7 +75,7 @@ void TournamentManager::addPointsToPlayersAfterFight(int winner, string firstPla
 		playersPoints[secondPlayer] += player2Doubler * 3;
 }
 
-void TournamentManager::doFights(bool beforeEqualShare) {
+void TournamentManager_203537246::doFights(bool beforeEqualShare) {
 	pair<string, string> curFightPlayers;
 	int winner;
 	int numOfFirstPlayerMatch = 0;
@@ -90,7 +90,7 @@ void TournamentManager::doFights(bool beforeEqualShare) {
 		numOfFirstPlayerMatch = playersGames[curFightPlayers.first];
 		numOfFirstPlayerMatch = playersGames[curFightPlayers.second];
 		matchCountLock.unlock();
-		GameManager gm((id2factory.find(curFightPlayers.first))->second(), (id2factory.find(curFightPlayers.second))->second());
+		GameManager_203537246 gm((id2factory.find(curFightPlayers.first))->second(), (id2factory.find(curFightPlayers.second))->second());
 		if (gm.initializeGameBoard()) {
 			gm.playGame();
 		}
@@ -101,18 +101,18 @@ void TournamentManager::doFights(bool beforeEqualShare) {
 	}
 }
 
-void TournamentManager::threadFuncThatDoesFights() {
+void TournamentManager_203537246::threadFuncThatDoesFights() {
 	doFights(true);
 	doFights(false);
 }
 
-void TournamentManager::run()
+void TournamentManager_203537246::run()
 {
 	int i = 0;
 	list<void *>::iterator dl_itr;
 	vector<thread> allThreadsVec;
 	for (i = 0; i < numOfThreads - 1; i++)
-		allThreadsVec.emplace_back(&TournamentManager::threadFuncThatDoesFights, this);
+		allThreadsVec.emplace_back(&TournamentManager_203537246::threadFuncThatDoesFights, this);
 	threadFuncThatDoesFights();
 	for (auto& t : allThreadsVec)
 		t.join();
@@ -122,7 +122,7 @@ void TournamentManager::run()
 		dlclose(*dl_itr);
 }
 
-bool TournamentManager::getAllDLs(string path)
+bool TournamentManager_203537246::getAllDLs(string path)
 {
 	FILE *dl;   // handle to read directory 
 	string cmd_str = "ls " + path + "/*.so";
@@ -161,7 +161,7 @@ bool TournamentManager::getAllDLs(string path)
 	return true;
 }
 
-void TournamentManager::setNumOfThreads(int numOfT)
+void TournamentManager_203537246::setNumOfThreads(int numOfT)
 {
 	numOfThreads = numOfT;
 }
@@ -170,7 +170,7 @@ bool compareTwoPlayersScores(pair<string, int> p1Pair, pair<string, int> p2Pair)
 	return (p1Pair.second > p2Pair.second);
 }
 
-void TournamentManager::printScoreList() {
+void TournamentManager_203537246::printScoreList() {
 	int i = 0;
 	vector<pair<string, int>> scoresVec;
 	for (auto& pair : playersPoints)
@@ -192,4 +192,4 @@ void TournamentManager::printScoreList() {
 
 
 //define the static variable
-TournamentManager TournamentManager::theTournamentManager;
+TournamentManager_203537246 TournamentManager_203537246::theTournamentManager_203537246;

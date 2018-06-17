@@ -1,5 +1,5 @@
-#ifndef __MY_POINT_H_
-#define __MY_POINT_H_
+#ifndef __MY_POINT_203537246_H_
+#define __MY_POINT_203537246_H_
 
 //--------------------------
 // MyPoint Class
@@ -11,15 +11,15 @@
 #include "Point.h"
 //--------------------------
 
-class MyPoint:public Point {
+class MyPoint_203537246:public Point {
 	int x, y;
 public:
-	MyPoint(int newX, int newY);
+	MyPoint_203537246(int newX, int newY);
 	int getX() const override;
 	int getY() const override;
 	void setX(int newX);
 	void setY(int newY);
-	~MyPoint() {}
+	//~MyPoint() {}
 };
 
 #endif

@@ -10,8 +10,8 @@
 //--------------------------
 #include "PlayerAlgorithm.h"
 #include "AllGameParameters.h"
-#include "GameBoard.h"
-#include "GameMove.h"
+#include "GameBoard_204573356.h"
+#include "GameMove_204573356.h"
 #include <map>
 #include <cstdlib>
 #include <ctime>
@@ -22,14 +22,14 @@ using namespace std;
 
 class RSPPlayer_204573356 :public PlayerAlgorithm {
 	int player;
-	unique_ptr<GameBoard> knowBoard;
+	unique_ptr<GameBoard_204573356> knowBoard;
 	map<string, int> myPieceCount;
 	bool isAutoPlayerSquareEmpty(const Point & piecePos);
 	char checkPiecesPositioned();
 	void updateMyPieceCount(char pieceType, int incOrDec);
-	void findNearbyBeatablePiece(const Point & myPiecePosition, MyPoint& pointToFill);
+	void findNearbyBeatablePiece(const Point & myPiecePosition, MyPoint_204573356& pointToFill);
 	bool isMoveablePiece(const Point & myPiecePosition);
-	void findLegalMove(const Point & myPiecePosition, MyPoint & pointToFill);
+	void findLegalMove(const Point & myPiecePosition, MyPoint_204573356 & pointToFill);
 public:
 	RSPPlayer_204573356();
 	void getInitialPositions(int player, std::vector<unique_ptr<PiecePosition>>& vectorToFill) override;

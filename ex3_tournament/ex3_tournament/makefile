@@ -1,12 +1,14 @@
 COMP = g++-5.3.0
-OBJS_TOUR = GameBoard.o GameFightInfo.o GameJokerChange.o GameManager.o \
-AlgorithmRegistration.o GamePiece.o main.o MyPoint.o TournamentManager.o
-OBJS_PLAYER = GameBoard.o GameFightInfo.o GameJokerChange.o GameMove.o \
-GamePiece.o MyPoint.o RSPPlayer_204573356.o
+OBJS_TOUR = GameBoard_203537246.o GameFightInfo_203537246.o GameJokerChange_203537246.o GameManager_203537246.o \
+AlgorithmRegistration.o GamePiece_203537246.o main_203537246.o MyPoint_203537246.o TournamentManager_203537246.o
+OBJS_PLAYER = GameBoard_204573356.o GameFightInfo_204573356.o GameJokerChange_204573356.o GameMove_204573356.o \
+GamePiece_204573356.o MyPoint_204573356.o RSPPlayer_204573356.o
 EXEC = ex3
 LIBS = -ldl
 CPP_COMP_FLAG = -std=c++14 -Wall -Wextra \
 -Werror -pedantic-errors -DNDEBUG
+CPP_COMP_FLAG_PLAYER = -std=c++14 -Wall -Wextra \
+-Werror -pedantic-errors -DNDEBUG -fPIC
 
 default:
 	make all
@@ -14,68 +16,83 @@ default:
 all:
 	make rps_lib
 	make rps_tournament
-	
-rps_lib: CPP_COMP_FLAG += -fPIC
-rps_lib: clean_rps_tournament
+
 rps_lib: RSPPlayer_204573356.so
 
-rps_tournament: clean_rps_lib
 rps_tournament: $(EXEC)
 
 $(EXEC): $(OBJS_TOUR)
 	$(COMP) $(OBJS_TOUR) -o $@ -lpthread -rdynamic $(LIBS)
 
 RSPPlayer_204573356.so: $(OBJS_PLAYER)
-	$(COMP) $(CPP_COMP_FLAG) -shared -Wl,-soname,RSPPlayer_204573356.so -o RSPPlayer_204573356.so $(OBJS_PLAYER)
-	
+	$(COMP) $(CPP_COMP_FLAG_PLAYER) -shared -Wl,-soname,RSPPlayer_204573356.so -o RSPPlayer_204573356.so $(OBJS_PLAYER)
+
 RSPPlayer_204573356.o: RSPPlayer_204573356.cpp RSPPlayer_204573356.h \
  PlayerAlgorithm.h Point.h PiecePosition.h Board.h FightInfo.h Move.h \
- JokerChange.h AllGameParameters.h GameBoard.h GamePiece.h MyPoint.h \
- GameMove.h AlgorithmRegistration.h
-	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp -mcmodel=large
-	
-GameBoard.o: GameBoard.cpp GameBoard.h Board.h GamePiece.h \
- PiecePosition.h MyPoint.h Point.h AllGameParameters.h
+ JokerChange.h AllGameParameters.h GameBoard_204573356.h GamePiece_204573356.h MyPoint_204573356.h \
+ GameMove_204573356.h AlgorithmRegistration.h
+	$(COMP) $(CPP_COMP_FLAG_PLAYER) -c $*.cpp -mcmodel=large
+
+GameBoard_204573356.o: GameBoard_204573356.cpp GameBoard_204573356.h Board.h GamePiece_204573356.h \
+ PiecePosition.h MyPoint_204573356.h Point.h AllGameParameters.h
+	$(COMP) $(CPP_COMP_FLAG_PLAYER) -c $*.cpp
+
+GameBoard_203537246.o: GameBoard_203537246.cpp GameBoard_203537246.h Board.h GamePiece_203537246.h \
+ PiecePosition.h MyPoint_203537246.h Point.h AllGameParameters.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-	
-GameFightInfo.o: GameFightInfo.cpp GameFightInfo.h FightInfo.h MyPoint.h \
+
+GameFightInfo_204573356.o: GameFightInfo_204573356.cpp GameFightInfo_204573356.h FightInfo.h MyPoint_204573356.h \
+ Point.h
+	$(COMP) $(CPP_COMP_FLAG_PLAYER) -c $*.cpp
+
+GameFightInfo_203537246.o: GameFightInfo_203537246.cpp GameFightInfo_203537246.h FightInfo.h MyPoint_203537246.h \
  Point.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-	
-GameJokerChange.o: GameJokerChange.cpp GameJokerChange.h JokerChange.h \
- MyPoint.h Point.h
+
+GameJokerChange_204573356.o: GameJokerChange_204573356.cpp GameJokerChange_204573356.h JokerChange.h \
+ MyPoint_204573356.h Point.h
+	$(COMP) $(CPP_COMP_FLAG_PLAYER) -c $*.cpp
+
+GameJokerChange_203537246.o: GameJokerChange_203537246.cpp GameJokerChange_203537246.h JokerChange.h \
+ MyPoint_203537246.h Point.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-	
-GameManager.o: GameManager.cpp GameManager.h PlayerAlgorithm.h Point.h \
- PiecePosition.h Board.h FightInfo.h Move.h JokerChange.h GameBoard.h \
- GamePiece.h MyPoint.h AllGameParameters.h GameFightInfo.h
+
+GameManager_203537246.o: GameManager_203537246.cpp GameManager_203537246.h PlayerAlgorithm.h Point.h \
+ PiecePosition.h Board.h FightInfo.h Move.h JokerChange.h GameBoard_203537246.h \
+ GamePiece_203537246.h MyPoint_203537246.h AllGameParameters.h GameFightInfo_203537246.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-	
-GameMove.o: GameMove.cpp GameMove.h Move.h MyPoint.h Point.h
+
+GameMove_204573356.o: GameMove_204573356.cpp GameMove_204573356.h Move.h MyPoint_204573356.h Point.h
+	$(COMP) $(CPP_COMP_FLAG_PLAYER) -c $*.cpp
+
+GamePiece_204573356.o: GamePiece_204573356.cpp GamePiece_204573356.h PiecePosition.h MyPoint_204573356.h Point.h
+	$(COMP) $(CPP_COMP_FLAG_PLAYER) -c $*.cpp
+
+GamePiece_203537246.o: GamePiece_203537246.cpp GamePiece_203537246.h PiecePosition.h MyPoint_203537246.h Point.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-	
-GamePiece.o: GamePiece.cpp GamePiece.h PiecePosition.h MyPoint.h Point.h
+
+MyPoint_204573356.o: MyPoint_204573356.cpp MyPoint_204573356.h Point.h
+	$(COMP) $(CPP_COMP_FLAG_PLAYER) -c $*.cpp
+
+MyPoint_203537246.o: MyPoint_203537246.cpp MyPoint_203537246.h Point.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-	
-MyPoint.o: MyPoint.cpp MyPoint.h Point.h
-	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
-	
+
 AlgorithmRegistration.o: AlgorithmRegistration.cpp \
  AlgorithmRegistration.h PlayerAlgorithm.h Point.h PiecePosition.h \
- Board.h FightInfo.h Move.h JokerChange.h TournamentManager.h \
- GameManager.h GameBoard.h GamePiece.h MyPoint.h AllGameParameters.h \
- GameFightInfo.h
+ Board.h FightInfo.h Move.h JokerChange.h TournamentManager_203537246.h \
+ GameManager_203537246.h GameBoard_203537246.h GamePiece_203537246.h MyPoint_203537246.h AllGameParameters.h \
+ GameFightInfo_203537246.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
 	
-TournamentManager.o: TournamentManager.cpp TournamentManager.h \
- GameManager.h PlayerAlgorithm.h Point.h PiecePosition.h Board.h \
- FightInfo.h Move.h JokerChange.h GameBoard.h GamePiece.h MyPoint.h \
- AllGameParameters.h GameFightInfo.h AlgorithmRegistration.h
+TournamentManager_203537246.o: TournamentManager_203537246.cpp TournamentManager_203537246.h \
+ GameManager_203537246.h PlayerAlgorithm.h Point.h PiecePosition.h Board.h \
+ FightInfo.h Move.h JokerChange.h GameBoard_203537246.h GamePiece_203537246.h MyPoint_203537246.h \
+ AllGameParameters.h GameFightInfo_203537246.h AlgorithmRegistration.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
 	
-main.o:  main.cpp TournamentManager.h GameManager.h PlayerAlgorithm.h \
+main_203537246.o:  main_203537246.cpp TournamentManager_203537246.h GameManager_203537246.h PlayerAlgorithm.h \
  Point.h PiecePosition.h Board.h FightInfo.h Move.h JokerChange.h \
- GameBoard.h GamePiece.h MyPoint.h AllGameParameters.h GameFightInfo.h
+ GameBoard_203537246.h GamePiece_203537246.h MyPoint_203537246.h AllGameParameters.h GameFightInfo_203537246.h
 	$(COMP) $(CPP_COMP_FLAG) -c $*.cpp
 
 clean:

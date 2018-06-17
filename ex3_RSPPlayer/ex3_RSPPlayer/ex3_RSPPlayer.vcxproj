@@ -119,26 +119,26 @@
     <ClInclude Include="AllGameParameters.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="FightInfo.h" />
-    <ClInclude Include="GameBoard.h" />
-    <ClInclude Include="GameFightInfo.h" />
-    <ClInclude Include="GameJokerChange.h" />
-    <ClInclude Include="GameMove.h" />
-    <ClInclude Include="GamePiece.h" />
+    <ClInclude Include="GameBoard_204573356.h" />
+    <ClInclude Include="GameFightInfo_204573356.h" />
+    <ClInclude Include="GameJokerChange_204573356.h" />
+    <ClInclude Include="GameMove_204573356.h" />
+    <ClInclude Include="GamePiece_204573356.h" />
     <ClInclude Include="JokerChange.h" />
     <ClInclude Include="Move.h" />
-    <ClInclude Include="MyPoint.h" />
+    <ClInclude Include="MyPoint_204573356.h" />
     <ClInclude Include="PiecePosition.h" />
     <ClInclude Include="PlayerAlgorithm.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="RSPPlayer_204573356.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameBoard.cpp" />
-    <ClCompile Include="GameFightInfo.cpp" />
-    <ClCompile Include="GameJokerChange.cpp" />
-    <ClCompile Include="GameMove.cpp" />
-    <ClCompile Include="GamePiece.cpp" />
-    <ClCompile Include="MyPoint.cpp" />
+    <ClCompile Include="GameBoard_204573356.cpp" />
+    <ClCompile Include="GameFightInfo_204573356.cpp" />
+    <ClCompile Include="GameJokerChange_204573356.cpp" />
+    <ClCompile Include="GameMove_204573356.cpp" />
+    <ClCompile Include="GamePiece_204573356.cpp" />
+    <ClCompile Include="MyPoint_204573356.cpp" />
     <ClCompile Include="RSPPlayer_204573356.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

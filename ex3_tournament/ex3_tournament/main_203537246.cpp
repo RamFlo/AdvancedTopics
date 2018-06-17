@@ -1,4 +1,4 @@
-#include "TournamentManager.h"
+#include "TournamentManager_203537246.h"
 #include <string>
 #include <iostream>
 using namespace std;
@@ -60,13 +60,13 @@ int main(int argc, char* argv[])
 		cout << "Invalid number of arguments supplied. valid optional arguments: -threads <num_threads> -path <location_of_algorithms>" << endl;
 		return 0;
 	}
-	if (!TournamentManager::getTournamentManager().getAllDLs(path))
+	if (!TournamentManager_203537246::getTournamentManager().getAllDLs(path))
 	{
 		cout << "Invlid *.so files' path supplied." << endl;
 		return 0;
 	}
-	TournamentManager::getTournamentManager().setNumOfThreads(numOfThreads);
-	TournamentManager::getTournamentManager().run();
-	TournamentManager::getTournamentManager().printScoreList();
+	TournamentManager_203537246::getTournamentManager().setNumOfThreads(numOfThreads);
+	TournamentManager_203537246::getTournamentManager().run();
+	TournamentManager_203537246::getTournamentManager().printScoreList();
 	return 0;
 }

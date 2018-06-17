@@ -36,31 +36,31 @@
     <ClInclude Include="Point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TournamentManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameBoard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameFightInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GamePiece.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="JokerChange.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AllGameParameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MyPoint.h">
+    <ClInclude Include="TournamentManager_203537246.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameJokerChange.h">
+    <ClInclude Include="GameBoard_203537246.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameFightInfo_203537246.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameJokerChange_203537246.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager_203537246.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePiece_203537246.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MyPoint_203537246.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,28 +68,28 @@
     <ClCompile Include="AlgorithmRegistration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TournamentManager.cpp">
+    <ClCompile Include="TournamentManager_203537246.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="MyPoint_203537246.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp">
+    <ClCompile Include="GameBoard_203537246.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameBoard.cpp">
+    <ClCompile Include="GameFightInfo_203537246.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameFightInfo.cpp">
+    <ClCompile Include="GameJokerChange_203537246.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GamePiece.cpp">
+    <ClCompile Include="GameManager_203537246.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MyPoint.cpp">
+    <ClCompile Include="GamePiece_203537246.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameJokerChange.cpp">
+    <ClCompile Include="main_203537246.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

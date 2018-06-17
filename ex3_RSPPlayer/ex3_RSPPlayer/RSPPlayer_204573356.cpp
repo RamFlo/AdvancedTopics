@@ -7,7 +7,7 @@ constructor for RSPPlayer_204573356
 */
 RSPPlayer_204573356::RSPPlayer_204573356()
 {
-	this->knowBoard = make_unique<GameBoard>(); //the board that this player sees.
+	this->knowBoard = make_unique<GameBoard_204573356>(); //the board that this player sees.
 	this->myPieceCount["myFlags"] = 0;
 	this->myPieceCount["myJokers"] = 0;
 	this->myPieceCount["myRocks"] = 0;
@@ -81,16 +81,16 @@ void RSPPlayer_204573356::getInitialPositions(int player, std::vector<unique_ptr
 	while ((pieceToPosition = checkPiecesPositioned()) != '#') {
 		curPiecePosX = rand() % M + 1;
 		curPiecePosY = rand() % N + 1;
-		if (!isAutoPlayerSquareEmpty(MyPoint(curPiecePosX, curPiecePosY))) //if the randomly generated square already contains a piece, try again
+		if (!isAutoPlayerSquareEmpty(MyPoint_204573356(curPiecePosX, curPiecePosY))) //if the randomly generated square already contains a piece, try again
 			continue;
 		if (pieceToPosition == 'J') {
-			vectorToFill.push_back(make_unique<GamePiece>(pieceToPosition, curPiecePosX, curPiecePosY, curTypeIfJoker, player));
-			this->knowBoard->setGamePieceOnBoard(GamePiece(pieceToPosition, curPiecePosX, curPiecePosY, curTypeIfJoker, player), player);
+			vectorToFill.push_back(make_unique<GamePiece_204573356>(pieceToPosition, curPiecePosX, curPiecePosY, curTypeIfJoker, player));
+			this->knowBoard->setGamePieceOnBoard(GamePiece_204573356(pieceToPosition, curPiecePosX, curPiecePosY, curTypeIfJoker, player), player);
 
 		}
 		else {
-			vectorToFill.push_back(make_unique<GamePiece>(pieceToPosition, curPiecePosX, curPiecePosY, '#', player));
-			this->knowBoard->setGamePieceOnBoard(GamePiece(pieceToPosition, curPiecePosX, curPiecePosY, '#', player), player);
+			vectorToFill.push_back(make_unique<GamePiece_204573356>(pieceToPosition, curPiecePosX, curPiecePosY, '#', player));
+			this->knowBoard->setGamePieceOnBoard(GamePiece_204573356(pieceToPosition, curPiecePosX, curPiecePosY, '#', player), player);
 		}
 		this->updateMyPieceCount(pieceToPosition, 1);
 	}
@@ -107,17 +107,17 @@ void RSPPlayer_204573356::notifyOnInitialBoard(const Board & b, const std::vecto
 	for (i = 0; (unsigned)i < fights.size(); i++) {
 		if (fights[i]->getWinner() != this->player) {
 			if (fights[i]->getWinner() == 0)
-				this->knowBoard->setGamePieceOnBoard(GamePiece('\0', fights[i]->getPosition().getX(), fights[i]->getPosition().getY(), '\0', 0), 0);
+				this->knowBoard->setGamePieceOnBoard(GamePiece_204573356('\0', fights[i]->getPosition().getX(), fights[i]->getPosition().getY(), '\0', 0), 0);
 			else
-				this->knowBoard->setGamePieceOnBoard(GamePiece(fights[i]->getPiece(fights[i]->getWinner()), fights[i]->getPosition().getX(), fights[i]->getPosition().getY(), '#', fights[i]->getWinner()), fights[i]->getWinner());
+				this->knowBoard->setGamePieceOnBoard(GamePiece_204573356(fights[i]->getPiece(fights[i]->getWinner()), fights[i]->getPosition().getX(), fights[i]->getPosition().getY(), '#', fights[i]->getWinner()), fights[i]->getWinner());
 			this->updateMyPieceCount(fights[i]->getPiece(this->player), -1);
 		}
 	}
 	//update knowBoard according to given board (put other player's unknown pieces on board)
 	for (col = 1; col <= M; col++) {
 		for (row = 1; row <= N; row++) {
-			if (isAutoPlayerSquareEmpty(MyPoint(col, row)) && b.getPlayer(MyPoint(col, row)) != 0)
-				this->knowBoard->setGamePieceOnBoard(GamePiece(UNKNOWN_PIECE, col, row, '#', b.getPlayer(MyPoint(col, row))), b.getPlayer(MyPoint(col, row)));
+			if (isAutoPlayerSquareEmpty(MyPoint_204573356(col, row)) && b.getPlayer(MyPoint_204573356(col, row)) != 0)
+				this->knowBoard->setGamePieceOnBoard(GamePiece_204573356(UNKNOWN_PIECE, col, row, '#', b.getPlayer(MyPoint_204573356(col, row))), b.getPlayer(MyPoint_204573356(col, row)));
 		}
 	}
 }
@@ -133,11 +133,11 @@ void RSPPlayer_204573356::notifyOnOpponentMove(const Move & move)
 	srcRow = move.getFrom().getY();
 	opponentNum = this->knowBoard->getPlayer(move.getFrom());
 	opponentPiece = this->knowBoard->getGamePiece(move.getFrom()).getPiece();
-	this->knowBoard->setGamePieceOnBoard(GamePiece('\0', srcCol, srcRow, '\0', 0), 0);
+	this->knowBoard->setGamePieceOnBoard(GamePiece_204573356('\0', srcCol, srcRow, '\0', 0), 0);
 	if (isAutoPlayerSquareEmpty(move.getTo())) {
 		dstCol = move.getTo().getX();
 		dstRow = move.getTo().getY();
-		this->knowBoard->setGamePieceOnBoard(GamePiece(opponentPiece, dstCol, dstRow, '#', opponentNum), opponentNum);
+		this->knowBoard->setGamePieceOnBoard(GamePiece_204573356(opponentPiece, dstCol, dstRow, '#', opponentNum), opponentNum);
 	}
 }
 
@@ -149,11 +149,11 @@ void RSPPlayer_204573356::notifyFightResult(const FightInfo & fightInfo)
 	int fightCol = fightInfo.getPosition().getX();
 	int fightRow = fightInfo.getPosition().getY();
 	if (fightInfo.getWinner() == 0) {
-		this->knowBoard->setGamePieceOnBoard(GamePiece('\0', fightCol, fightRow, '\0', 0), 0);
+		this->knowBoard->setGamePieceOnBoard(GamePiece_204573356('\0', fightCol, fightRow, '\0', 0), 0);
 		this->updateMyPieceCount(fightInfo.getPiece(this->player), -1);
 	}
 	else {
-		this->knowBoard->setGamePieceOnBoard(GamePiece(fightInfo.getPiece(fightInfo.getWinner()), fightCol, fightRow, '#', fightInfo.getWinner()), fightInfo.getWinner());
+		this->knowBoard->setGamePieceOnBoard(GamePiece_204573356(fightInfo.getPiece(fightInfo.getWinner()), fightCol, fightRow, '#', fightInfo.getWinner()), fightInfo.getWinner());
 		if (fightInfo.getWinner() != this->player)
 			this->updateMyPieceCount(fightInfo.getPiece(this->player), -1);
 	}
@@ -194,12 +194,12 @@ bool RSPPlayer_204573356::doesPiece1BeatPiece2(char p1, char p2) {
 fills pointToFill with the position of a piece that is near this player's piece (found on myPiecePosition) that can be beaten.
 If no such position exists, does nothing.
 */
-void RSPPlayer_204573356::findNearbyBeatablePiece(const Point & myPiecePosition, MyPoint& pointToFill) {
+void RSPPlayer_204573356::findNearbyBeatablePiece(const Point & myPiecePosition, MyPoint_204573356& pointToFill) {
 	int col = myPiecePosition.getX(), row = myPiecePosition.getY(), dstPointPlayerNum;
 	char myPiece = this->knowBoard->getGamePiece(myPiecePosition).getPiece(), opponentPiece;
 	if (col + 1 <= M) {
-		opponentPiece = this->knowBoard->getGamePiece(MyPoint(col + 1, row)).getPiece();
-		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer();
+		opponentPiece = this->knowBoard->getGamePiece(MyPoint_204573356(col + 1, row)).getPiece();
+		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint_204573356(col + 1, row)).getPlayer();
 		if (dstPointPlayerNum != this->player && opponentPiece != '\0' && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
 			pointToFill.setX(col + 1);
 			pointToFill.setY(row);
@@ -207,8 +207,8 @@ void RSPPlayer_204573356::findNearbyBeatablePiece(const Point & myPiecePosition,
 		}
 	}
 	if (col - 1 >= 1) {
-		opponentPiece = this->knowBoard->getGamePiece(MyPoint(col - 1, row)).getPiece();
-		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col - 1, row)).getPlayer();
+		opponentPiece = this->knowBoard->getGamePiece(MyPoint_204573356(col - 1, row)).getPiece();
+		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint_204573356(col - 1, row)).getPlayer();
 		if (dstPointPlayerNum != this->player && opponentPiece != '\0' && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
 			pointToFill.setX(col - 1);
 			pointToFill.setY(row);
@@ -216,8 +216,8 @@ void RSPPlayer_204573356::findNearbyBeatablePiece(const Point & myPiecePosition,
 		}
 	}
 	if (row + 1 <= N) {
-		opponentPiece = this->knowBoard->getGamePiece(MyPoint(col, row + 1)).getPiece();
-		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col, row + 1)).getPlayer();
+		opponentPiece = this->knowBoard->getGamePiece(MyPoint_204573356(col, row + 1)).getPiece();
+		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint_204573356(col, row + 1)).getPlayer();
 		if (dstPointPlayerNum != this->player && opponentPiece != '\0' && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
 			pointToFill.setX(col);
 			pointToFill.setY(row + 1);
@@ -225,8 +225,8 @@ void RSPPlayer_204573356::findNearbyBeatablePiece(const Point & myPiecePosition,
 		}
 	}
 	if (row - 1 >= 1) {
-		opponentPiece = this->knowBoard->getGamePiece(MyPoint(col, row - 1)).getPiece();
-		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint(col, row - 1)).getPlayer();
+		opponentPiece = this->knowBoard->getGamePiece(MyPoint_204573356(col, row - 1)).getPiece();
+		dstPointPlayerNum = this->knowBoard->getGamePiece(MyPoint_204573356(col, row - 1)).getPlayer();
 		if (dstPointPlayerNum != this->player && opponentPiece != '\0' && doesPiece1BeatPiece2(myPiece, opponentPiece)) {
 			pointToFill.setX(col);
 			pointToFill.setY(row - 1);
@@ -248,7 +248,7 @@ bool RSPPlayer_204573356::isMoveablePiece(const Point & myPiecePosition) {
 /*
 fills pointToFill with a random legal move for the piece located at myPiecePosition. If not such move exists, does nothing.
 */
-void RSPPlayer_204573356::findLegalMove(const Point & myPiecePosition, MyPoint& pointToFill) {
+void RSPPlayer_204573356::findLegalMove(const Point & myPiecePosition, MyPoint_204573356& pointToFill) {
 	int col = myPiecePosition.getX(), row = myPiecePosition.getY(), i, randDirectionNum;
 	vector<int> myPossibleDirectionsVec;
 	bool isNumInVector[4] = { false,false,false,false };
@@ -260,22 +260,22 @@ void RSPPlayer_204573356::findLegalMove(const Point & myPiecePosition, MyPoint& 
 		}
 	}
 	for (i = 0; i < 4; i++) { //pick a direction according to the randomly generated vector and check if valid move exists in that direction.
-		if (myPossibleDirectionsVec[i] == 0 && col + 1 <= M && this->knowBoard->getGamePiece(MyPoint(col + 1, row)).getPlayer() != this->player) {
+		if (myPossibleDirectionsVec[i] == 0 && col + 1 <= M && this->knowBoard->getGamePiece(MyPoint_204573356(col + 1, row)).getPlayer() != this->player) {
 			pointToFill.setX(col + 1);
 			pointToFill.setY(row);
 			return;
 		}
-		if (myPossibleDirectionsVec[i] == 1 && col - 1 >= 1 && this->knowBoard->getGamePiece(MyPoint(col - 1, row)).getPlayer() != this->player) {
+		if (myPossibleDirectionsVec[i] == 1 && col - 1 >= 1 && this->knowBoard->getGamePiece(MyPoint_204573356(col - 1, row)).getPlayer() != this->player) {
 			pointToFill.setX(col - 1);
 			pointToFill.setY(row);
 			return;
 		}
-		if (myPossibleDirectionsVec[i] == 2 && row + 1 <= N && this->knowBoard->getGamePiece(MyPoint(col, row + 1)).getPlayer() != this->player) {
+		if (myPossibleDirectionsVec[i] == 2 && row + 1 <= N && this->knowBoard->getGamePiece(MyPoint_204573356(col, row + 1)).getPlayer() != this->player) {
 			pointToFill.setX(col);
 			pointToFill.setY(row + 1);
 			return;
 		}
-		if (myPossibleDirectionsVec[i] == 3 && row - 1 >= 1 && this->knowBoard->getGamePiece(MyPoint(col, row - 1)).getPlayer() != this->player) {
+		if (myPossibleDirectionsVec[i] == 3 && row - 1 >= 1 && this->knowBoard->getGamePiece(MyPoint_204573356(col, row - 1)).getPlayer() != this->player) {
 			pointToFill.setX(col);
 			pointToFill.setY(row - 1);
 			return;
@@ -291,20 +291,20 @@ unique_ptr<Move> RSPPlayer_204573356::getMove()
 {
 	int col, row, randIndexInPosVector;
 	char movingPieceType, movingPieceJokerRep;
-	vector<MyPoint> myPiecesPositions;
-	MyPoint pointToMoveTo(-1, -1);
+	vector<MyPoint_204573356> myPiecesPositions;
+	MyPoint_204573356 pointToMoveTo(-1, -1);
 	for (col = 1; col <= M; col++) { //try to find a move that beats the other player's piece.
 		for (row = 1; row <= N; row++) {
-			if (this->knowBoard->getPlayer(MyPoint(col, row)) == this->player && this->isMoveablePiece(MyPoint(col, row))) {
-				myPiecesPositions.push_back(MyPoint(col, row));
-				findNearbyBeatablePiece(MyPoint(col, row), pointToMoveTo);
+			if (this->knowBoard->getPlayer(MyPoint_204573356(col, row)) == this->player && this->isMoveablePiece(MyPoint_204573356(col, row))) {
+				myPiecesPositions.push_back(MyPoint_204573356(col, row));
+				findNearbyBeatablePiece(MyPoint_204573356(col, row), pointToMoveTo);
 				if (pointToMoveTo.getX() != -1) {
-					movingPieceType = this->knowBoard->getGamePiece(MyPoint(col, row)).getPiece();
-					movingPieceJokerRep = this->knowBoard->getGamePiece(MyPoint(col, row)).getJokerRep();
+					movingPieceType = this->knowBoard->getGamePiece(MyPoint_204573356(col, row)).getPiece();
+					movingPieceJokerRep = this->knowBoard->getGamePiece(MyPoint_204573356(col, row)).getJokerRep();
 					//assuming that I won, even if I lost, since notify on fight result will correct me: update self's board according to the move found.
-					this->knowBoard->setGamePieceOnBoard(GamePiece(movingPieceType, pointToMoveTo.getX(), pointToMoveTo.getY(), movingPieceJokerRep, this->player), this->player);
-					this->knowBoard->setGamePieceOnBoard(GamePiece('\0', col, row, '\0', 0), 0);
-					return make_unique<GameMove>(col, row, pointToMoveTo.getX(), pointToMoveTo.getY());
+					this->knowBoard->setGamePieceOnBoard(GamePiece_204573356(movingPieceType, pointToMoveTo.getX(), pointToMoveTo.getY(), movingPieceJokerRep, this->player), this->player);
+					this->knowBoard->setGamePieceOnBoard(GamePiece_204573356('\0', col, row, '\0', 0), 0);
+					return make_unique<GameMove_204573356>(col, row, pointToMoveTo.getX(), pointToMoveTo.getY());
 				}
 			}
 		}
@@ -312,7 +312,7 @@ unique_ptr<Move> RSPPlayer_204573356::getMove()
 	while (pointToMoveTo.getX() == -1) { //if no good move found, randomly picks a piece and moves it in a random direction.
 		if (myPiecesPositions.size() == 0) {
 			printf("myPiecesPositions.size() == 0\n");
-			return make_unique<GameMove>(-1, -1, -1, -1);
+			return make_unique<GameMove_204573356>(-1, -1, -1, -1);
 		}
 			
 		randIndexInPosVector = rand() % myPiecesPositions.size();
@@ -321,9 +321,9 @@ unique_ptr<Move> RSPPlayer_204573356::getMove()
 	movingPieceType = this->knowBoard->getGamePiece(myPiecesPositions[randIndexInPosVector]).getPiece();
 	movingPieceJokerRep = this->knowBoard->getGamePiece(myPiecesPositions[randIndexInPosVector]).getJokerRep();
 	//assuming that I won, even if I lost, since notify on fight result will correct me: update self's board according to the move found.
-	this->knowBoard->setGamePieceOnBoard(GamePiece(movingPieceType, pointToMoveTo.getX(), pointToMoveTo.getY(), movingPieceJokerRep, this->player), this->player);
-	this->knowBoard->setGamePieceOnBoard(GamePiece('\0', myPiecesPositions[randIndexInPosVector].getX(), myPiecesPositions[randIndexInPosVector].getY(), '\0', 0), 0);
-	return make_unique<GameMove>(myPiecesPositions[randIndexInPosVector].getX(), myPiecesPositions[randIndexInPosVector].getY(), pointToMoveTo.getX(), pointToMoveTo.getY());
+	this->knowBoard->setGamePieceOnBoard(GamePiece_204573356(movingPieceType, pointToMoveTo.getX(), pointToMoveTo.getY(), movingPieceJokerRep, this->player), this->player);
+	this->knowBoard->setGamePieceOnBoard(GamePiece_204573356('\0', myPiecesPositions[randIndexInPosVector].getX(), myPiecesPositions[randIndexInPosVector].getY(), '\0', 0), 0);
+	return make_unique<GameMove_204573356>(myPiecesPositions[randIndexInPosVector].getX(), myPiecesPositions[randIndexInPosVector].getY(), pointToMoveTo.getX(), pointToMoveTo.getY());
 }
 
 unique_ptr<JokerChange> RSPPlayer_204573356::getJokerChange()

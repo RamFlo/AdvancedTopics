@@ -1,5 +1,5 @@
-#ifndef __GAME_MANAGER_H_
-#define __GAME_MANAGER_H_
+#ifndef __GAME_MANAGER_203537246_H_
+#define __GAME_MANAGER_203537246_H_
 
 //--------------------------
 // GameManager Class
@@ -12,8 +12,8 @@
 #include <string>
 #include <vector>
 #include "PlayerAlgorithm.h"
-#include "GameBoard.h"
-#include "GameFightInfo.h"
+#include "GameBoard_203537246.h"
+#include "GameFightInfo_203537246.h"
 
 //--------------------------
 // GameManager class
@@ -26,9 +26,9 @@
 #include <string>
 using namespace std;
 //--------------------------
-class GameManager {
+class GameManager_203537246 {
 	unique_ptr<PlayerAlgorithm> player1Algorithm, player2Algorithm;
-	unique_ptr<GameBoard> gBoard,p1InitialBoard, p2InitialBoard;
+	unique_ptr<GameBoard_203537246> gBoard,p1InitialBoard, p2InitialBoard;
 	bool isPlayerSquareEmptyDuringPositioning(int player, const Point & piecePos);
 	bool handlePositioningLine(PiecePosition & curPiece, int player);
 	bool isEnoughFlags(int player);
@@ -43,13 +43,13 @@ class GameManager {
 	bool isThereLegalMove(const Point & myPiecePosition);
 	bool playerHasLegalMove(int player);
 	int getOtherPlayer(int player);
-	bool isMovingPiece(const GamePiece & piece);
+	bool isMovingPiece(const GamePiece_203537246 & piece);
 	bool isLegalMove(int player, const Point & fromPoint, const Point & toPoint);
 	bool checkIfPlayerHasNoFlags(int player);
 	bool isLegalJokerChange(const JokerChange & curJokerChange, int player);
 	map<string, int> pieceCountMap;
 public:
-	GameManager(unique_ptr<PlayerAlgorithm> p1, unique_ptr<PlayerAlgorithm> p2);
+	GameManager_203537246(unique_ptr<PlayerAlgorithm> p1, unique_ptr<PlayerAlgorithm> p2);
 	bool initializeGameBoard();
 	void playGame();
 	int getWinner();

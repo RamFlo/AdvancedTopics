@@ -1,5 +1,5 @@
-#ifndef __GAME_MOVE_H_
-#define __GAME_MOVE_H_
+#ifndef __GAME_MOVE_204573356_H_
+#define __GAME_MOVE_204573356_H_
 
 //--------------------------
 // GameMove class
@@ -9,18 +9,18 @@
 
 //--------------------------
 #include "Move.h"
-#include "MyPoint.h"
+#include "MyPoint_204573356.h"
 #include <memory>
 using namespace std;
 //--------------------------
 
-class GameMove: public Move {
+class GameMove_204573356: public Move {
 	unique_ptr<Point> fromPoint, toPoint;
 public:
-	GameMove(int fromX, int fromY, int toX, int toY);
+	GameMove_204573356(int fromX, int fromY, int toX, int toY);
 	const Point& getFrom() const override;
 	const Point& getTo() const override;
-	~GameMove() {}
+	~GameMove_204573356() {}
 };
 
 #endif
