@@ -117,10 +117,10 @@
   <ItemGroup>
     <ClInclude Include="ex4_header.h" />
     <ClInclude Include="GameBoard.h" />
-    <ClInclude Include="SimpleTest\unit_test_util.h" />
+    <ClInclude Include="unit_test_util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SimpleTest\main.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
