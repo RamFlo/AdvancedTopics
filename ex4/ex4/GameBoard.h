@@ -1,0 +1,1 @@
+template<int ROWS, int COLS, typename GAME_PIECE, int players=2>
