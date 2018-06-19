@@ -24,12 +24,12 @@ class GameBoard {
 			return previousPiece;
 		}
 		
-		class iterator {
+		/*class iterator {
 			PieceInfo<GAME_PIECE>* square;
 			int pos;
 		public:
 			iterator(PieceInfo<GAME_PIECE>* curSquare) : square(curSquare), pos(0) {}
-			iterator operator++() { //to fix: should only go through existing pieces
+			iterator operator++() {
 				this->square++;
 				pos++;
 				while (!(*this->square)) {
@@ -47,26 +47,27 @@ class GameBoard {
 			bool operator!=(iterator other) {
 				return square != other.square;
 			}
-		};
+		};*/
 
-		class FilteringIterator {
+		class iterator {
 			PieceInfo<GAME_PIECE>* square;
 			int pos, playerFilter;
 			GAME_PIECE pieceFilter;
 			bool filterByPlayer, filterByPiece;
 		public:
-			FilteringIterator(PieceInfo<GAME_PIECE>* curSquare, bool shouldFilterByPlayer, int player, bool shouldFilterByPiece, GAME_PIECE piece) {
-				this->filterByPlayer = shouldFilterByPlayer;
-				this->filterByPiece = shouldFilterByPiece;
-				
-				this->square = curSquare;
-				this->pos = 0;
+			iterator(PieceInfo<GAME_PIECE>* curSquare) : filterByPlayer(false), filterByPiece(false), square(curSquare), pos(0) {}
+
+			iterator(PieceInfo<GAME_PIECE>* curSquare, int player) : filterByPlayer(true), playerFilter(player), filterByPiece(false), square(curSquare), pos(0) {}
+
+			iterator(PieceInfo<GAME_PIECE>* curSquare, GAME_PIECE piece) : filterByPlayer(false), filterByPiece(true), pieceFilter(piece), square(curSquare), pos(0) {}
 			
-			}
-			FilteringIterator operator++() { //to fix: should only go through existing pieces
+			iterator(PieceInfo<GAME_PIECE>* curSquare, GAME_PIECE piece, int player) : filterByPlayer(true), playerFilter(player), filterByPiece(true), pieceFilter(piece), square(curSquare), pos(0) {}
+
+
+			iterator operator++() {
 				this->square++;
 				pos++;
-				while (!(*this->square)) {
+				while (!(*this->square) && (!filterByPlayer || (pair<int, GAME_PIECE>(**(this->square))).first != playerFilter) && (!filterByPiece || (pair<int, GAME_PIECE>(**(this->square))).second != pieceFilter)) {
 					this->square++;
 					pos++;
 				}
@@ -82,7 +83,6 @@ class GameBoard {
 				return square != other.square;
 			}
 		};
-
 
 		const iterator begin() {
 			int curPosition = 0;
@@ -90,9 +90,26 @@ class GameBoard {
 				curPosition++;
 			return board + curPosition;
 		}
-
 		const iterator end() {
 			return board + COLS * ROWS;
+		}
+		const iterator allPiecesOfPlayer(int playerNum) {
+			int curPosition = 0;
+			while ((!board[curPosition] || ((pair<int, GAME_PIECE>)*board[curPosition]).first != playerNum) && curPosition < COLS * ROWS)
+				curPosition++;
+			return iterator(board + curPosition, playerNum);
+		}
+		const iterator allOccureneceOfPiece(GAME_PIECE piece) {
+			int curPosition = 0;
+			while ((!board[curPosition] || ((pair<int, GAME_PIECE>)*board[curPosition]).second != piece) && curPosition < COLS * ROWS)
+				curPosition++;
+			return iterator(board + curPosition, piece);
+		}
+		const iterator allOccureneceOfPieceForPlayer(GAME_PIECE piece, int playerNum) {
+			int curPosition = 0;
+			while ((!board[curPosition] || ((pair<int, GAME_PIECE>)*board[curPosition]).second != piece || ((pair<int, GAME_PIECE>)*board[curPosition]).first != playerNum) && curPosition < COLS * ROWS)
+				curPosition++;
+			return iterator(board + curPosition,piece, playerNum);
 		}
 };
 
