@@ -12,7 +12,7 @@ class GameBoard {
 	PieceInfo<GAME_PIECE> board[ROWS*COLS];
 
 	public :
-		GameBoard() {};
+		GameBoard() {}
 		PieceInfo<GAME_PIECE> getPiece(int row, int col) {
 			if (board[row*COLS + col] == nullptr)
 				return nullptr;
@@ -33,6 +33,10 @@ class GameBoard {
 			iterator operator++() { //to fix: should only go through existing pieces
 				this->square++;
 				pos++;
+				while (!this->square) {
+					this->square++;
+					pos++;
+				}
 				return *this;
 			}
 			tuple<int, int, GAME_PIECE, int> operator*() {
@@ -47,11 +51,17 @@ class GameBoard {
 		};
 
 		const iterator begin() {
-			return board; //to fix: should only go through existing pieces
+			PieceInfo<GAME_PIECE>* curPos = board;
+			int curPosition = 0;
+			while (!curPos && curPosition < COLS * ROWS) {
+				curPos++;
+				curPosition++;
+			}
+			return curPos;
 		}
 
 		const iterator end() {
-			return board + COLS * ROWS; //to fix: should only go through existing pieces
+			return board + COLS * ROWS;
 		}
 };
 

@@ -28,7 +28,16 @@ static bool test1(){
 	return true;
 }
 
+static bool test2() {
+	GameBoard<12, 7, string, 4> board;
+	for (auto pieceInfo : board) {
+		return false;
+	}
+	return true;
+}
+
 int main(){
-	RUN_TEST(test1);
+	//RUN_TEST(test1);
+	RUN_TEST(test2);
 	return 0;
 }
