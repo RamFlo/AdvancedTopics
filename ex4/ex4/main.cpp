@@ -37,7 +37,7 @@ static bool test2() {
 }
 
 int main(){
-	//RUN_TEST(test1);
+	RUN_TEST(test1);
 	RUN_TEST(test2);
 	return 0;
 }

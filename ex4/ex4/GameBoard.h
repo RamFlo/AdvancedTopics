@@ -7,7 +7,6 @@ template<typename GAME_PIECE>
 
 using PieceInfo = std::unique_ptr<const std::pair<int, GAME_PIECE>>;
 template<int ROWS, int COLS, typename GAME_PIECE, int PLAYERS = 2>
-
 class GameBoard {
 	PieceInfo<GAME_PIECE> board[ROWS*COLS];
 
@@ -29,11 +28,11 @@ class GameBoard {
 			PieceInfo<GAME_PIECE>* square;
 			int pos;
 		public:
-			iterator(PieceInfo<GAME_PIECE>* curSquare, int newPos = 0) : square(curSquare), pos(newPos) {}
+			iterator(PieceInfo<GAME_PIECE>* curSquare) : square(curSquare), pos(0) {}
 			iterator operator++() { //to fix: should only go through existing pieces
 				this->square++;
 				pos++;
-				while (!this->square) {
+				while (!(*this->square)) {
 					this->square++;
 					pos++;
 				}
@@ -50,14 +49,46 @@ class GameBoard {
 			}
 		};
 
-		const iterator begin() {
-			PieceInfo<GAME_PIECE>* curPos = board;
-			int curPosition = 0;
-			while (!curPos && curPosition < COLS * ROWS) {
-				curPos++;
-				curPosition++;
+		class FilteringIterator {
+			PieceInfo<GAME_PIECE>* square;
+			int pos, playerFilter;
+			GAME_PIECE pieceFilter;
+			bool filterByPlayer, filterByPiece;
+		public:
+			FilteringIterator(PieceInfo<GAME_PIECE>* curSquare, bool shouldFilterByPlayer, int player, bool shouldFilterByPiece, GAME_PIECE piece) {
+				this->filterByPlayer = shouldFilterByPlayer;
+				this->filterByPiece = shouldFilterByPiece;
+				
+				this->square = curSquare;
+				this->pos = 0;
+			
 			}
-			return curPos;
+			FilteringIterator operator++() { //to fix: should only go through existing pieces
+				this->square++;
+				pos++;
+				while (!(*this->square)) {
+					this->square++;
+					pos++;
+				}
+				return *this;
+			}
+			tuple<int, int, GAME_PIECE, int> operator*() {
+				int curRow = pos / ROWS;
+				int curCol = pos % COLS;
+				pair<int, GAME_PIECE> curGameInfo = **(this->square);
+				return make_tuple(curRow, curCol, curGameInfo.second, curGameInfo.first);
+			}
+			bool operator!=(iterator other) {
+				return square != other.square;
+			}
+		};
+
+
+		const iterator begin() {
+			int curPosition = 0;
+			while (!board[curPosition] && curPosition < COLS * ROWS)
+				curPosition++;
+			return board + curPosition;
 		}
 
 		const iterator end() {
